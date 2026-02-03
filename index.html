@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; transition: background-color 0.3s; }
+        .bg-spanish-red { background-color: #AA151B; }
+        .bg-spanish-yellow { background-color: #F1BF00; }
+        .text-spanish-red { color: #AA151B; }
+        .border-spanish-red { border-color: #AA151B; }
+        .pattern-bg {
+            background-image: radial-gradient(#F1BF00 0.5px, transparent 0.5px);
+            background-size: 10px 10px;
+        }
+        .form-header-img {
+            height: 12px;
+            background: linear-gradient(90deg, #AA151B 0%, #F1BF00 50%, #AA151B 100%);
+            border-radius: 8px 8px 0 0;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-gray-200 min-h-screen py-4 md:py-8 flex justify-center items-start">
+
+    <!-- 第一部分：宣傳海報 -->
+    <div id="posterSection" class="max-w-4xl w-full bg-white shadow-2xl overflow-hidden relative border-[12px] border-spanish-red rounded-sm">
+        <div class="absolute inset-0 pointer-events-none opacity-5 overflow-hidden pattern-bg"></div>
+        
+        <!-- 海報頂部 -->
+        <div class="bg-spanish-red text-white p-10 text-center relative overflow-hidden">
+            <!-- 背景裝飾 -->
+            <div class="absolute right-10 top-6 opacity-30 text-6xl">⚽</div>
+            <div class="absolute left-10 bottom-4 opacity-30 text-5xl">🎸</div>
+            <div class="absolute right-1/4 bottom-2 opacity-20 text-4xl">💃</div>
+            
+            <div class="relative z-10">
+                <p class="text-lg font-bold mb-3 tracking-widest bg-spanish-yellow text-spanish-red inline-block px-6 py-1 rounded-full shadow-lg">
+                    葵青區首間開辦課程小學 🇪🇸
+                </p>
+                <h1 class="text-5xl md:text-7xl font-black mt-4 mb-2">西班牙語及文化</h1>
+                <h2 class="text-3xl md:text-5xl font-bold opacity-90 tracking-tighter">中小銜接課程 · 招募學員</h2>
+                <div class="mt-6 flex justify-center items-center gap-6">
+                    <span class="text-xl md:text-2xl font-medium italic">¡Hola! 配合教育局初中其他語言先導計劃</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 海報內容 -->
+        <div class="p-8 grid md:grid-cols-12 gap-8 relative">
+            <!-- 左側資訊欄 -->
+            <div class="md:col-span-4 space-y-6">
+                <div class="bg-spanish-yellow/15 p-6 rounded-3xl border-2 border-spanish-yellow">
+                    <h3 class="text-xl font-bold text-spanish-red mb-4 flex items-center gap-2">
+                        <span>🚀</span> 政策配合
+                    </h3>
+                    <p class="text-gray-800 text-sm leading-relaxed font-medium">
+                        本校率先響應教育局<br>
+                        <span class="text-spanish-red font-bold">「初中其他語言先導計劃」</span><br>
+                        透過中小銜接課程，讓學生提早接觸西班牙語，為升讀初中選修外語打下堅實基礎。
+                    </p>
+                </div>
+
+                <div class="bg-blue-600 text-white p-6 rounded-3xl shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-2 -bottom-2 opacity-20 text-6xl transform -rotate-12">✈️</div>
+                    <h3 class="text-xl font-bold mb-3 flex items-center gap-2">
+                        <span>🌍</span> 西班牙遊學團
+                    </h3>
+                    <p class="text-sm leading-relaxed">
+                        完成基礎及進階課程並通過考核，將<b>甄選 10 位學生</b>參加金禧校慶西班牙海外文化交流！
+                    </p>
+                </div>
+            </div>
+
+            <!-- 右側資訊欄 -->
+            <div class="md:col-span-8">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-gray-50 p-4 rounded-2xl text-center border-b-4 border-spanish-yellow">
+                        <p class="text-xs text-gray-500 font-bold mb-1">招收對象</p>
+                        <p class="font-black text-spanish-red">小三、小四及小五</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-2xl text-center border-b-4 border-spanish-red">
+                        <p class="text-xs text-gray-500 font-bold mb-1">教學語言</p>
+                        <p class="font-black text-spanish-red">全英語 (English)</p>
+                    </div>
+                </div>
+
+                <div class="mb-8 bg-gray-50/50 p-6 rounded-3xl border border-gray-100">
+                    <h3 class="text-2xl font-black mb-4 flex items-center gap-2">
+                        <span class="text-spanish-red text-xl">📅</span> 上課日期 (第一期)
+                    </h3>
+                    <div class="text-gray-700 space-y-2">
+                        <p class="font-bold">3月: 6, 20, 27 | 4月: 17, 24</p>
+                        <p class="font-bold">5月: 8, 15, 22 | 6月: 5, 12</p>
+                        <p class="text-sm font-bold text-spanish-red mt-2 flex items-center gap-2">
+                            <span class="inline-block w-2 h-2 rounded-full bg-spanish-red"></span>
+                            時間：逢週五 3:45 PM - 4:45 PM
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 報名按鈕區 -->
+                <div class="bg-spanish-red text-white p-8 rounded-3xl shadow-2xl relative group">
+                    <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity rounded-3xl"></div>
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+                        <div>
+                            <h3 class="text-2xl font-black mb-1 flex items-center gap-2">
+                                <span>📝</span> 立即報名
+                            </h3>
+                            <p class="text-spanish-yellow text-sm font-bold">截止日期：2026年2月6日</p>
+                            <p class="text-white/70 text-xs mt-1 italic">需參加簡單英語面試</p>
+                        </div>
+                        <button onclick="showForm()" class="bg-white text-spanish-red px-10 py-4 rounded-full font-black text-lg shadow-lg hover:scale-105 active:scale-95 transition-all">
+                            進入網上報名表
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 頁尾 -->
+        <div class="bg-spanish-yellow p-6 flex flex-col md:flex-row justify-between items-center text-spanish-red border-t-4 border-white">
+            <div class="font-black text-lg mb-2 md:mb-0">
+                柏立基教育學院校友會盧光輝紀念學校 啟
+            </div>
+            <div class="text-right text-sm font-bold italic font-serif">
+                ¡Vive la lengua, vive la cultura!
+            </div>
+        </div>
+    </div>
+
+    <!-- 第二部分：模擬 Google Form 報名表 (預設隱藏) -->
+    <div id="formSection" class="max-w-2xl w-full space-y-4 hidden">
+        <button onclick="showPoster()" class="text-gray-600 hover:text-spanish-red flex items-center gap-1 mb-4 font-bold transition-colors">
+            ← 返回宣傳海報
+        </button>
+        
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="form-header-img"></div>
+            <div class="p-6">
+                <h1 class="text-3xl font-bold mb-4">西班牙語興趣班 - 報名表</h1>
+                <p class="text-sm text-gray-700 leading-relaxed">
+                    親愛的家長：本課程為配合<b>「中小銜接」</b>而設，請填妥資料。提交後，校方將於 2 月初通知面試安排。
+                </p>
+                <hr class="my-4">
+                <p class="text-red-500 text-xs">* 必填項</p>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-6">
+            <div>
+                <label class="block font-bold mb-2 text-gray-700">學生姓名 (中/英) <span class="text-red-500">*</span></label>
+                <input type="text" placeholder="例如：陳大文 Chan Tai Man" class="w-full border-b border-gray-300 focus:border-spanish-red focus:outline-none py-2 transition-colors">
+            </div>
+            <div>
+                <label class="block font-bold mb-2 text-gray-700">就讀班級 <span class="text-red-500">*</span></label>
+                <div class="flex gap-6">
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grade" class="accent-spanish-red"> <span>P.3</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grade" class="accent-spanish-red"> <span>P.4</span></label>
+                    <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="grade" class="accent-spanish-red"> <span>P.5</span></label>
+                </div>
+            </div>
+            <div>
+                <label class="block font-bold mb-2 text-gray-700">家長聯絡電話 <span class="text-red-500">*</span></label>
+                <input type="tel" placeholder="請輸入 8 位數字" class="w-full border-b border-gray-300 focus:border-spanish-red focus:outline-none py-2 transition-colors">
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center pb-10">
+            <button onclick="showPoster()" class="text-gray-500 px-6 py-2 rounded font-medium hover:text-gray-700">取消</button>
+            <button onclick="alert('報名已模擬提交！這是一個展示用的模擬表單。')" class="bg-spanish-red text-white px-10 py-2 rounded-lg font-bold shadow-md hover:bg-red-800 transition-colors">
+                提交 (Submit)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function showForm() {
+            document.getElementById('posterSection').classList.add('hidden');
+            document.getElementById('formSection').classList.remove('hidden');
+            document.body.style.backgroundColor = '#fdf2f2';
+            window.scrollTo(0, 0);
+        }
+
+        function showPoster() {
+            document.getElementById('formSection').classList.add('hidden');
+            document.getElementById('posterSection').classList.remove('hidden');
+            document.body.style.backgroundColor = '#e5e7eb';
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
