@@ -1,444 +1,190 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日蝕模擬器</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #0a0e1a;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; padding: 20px;
-        }
-        .container {
-            background: linear-gradient(145deg, #1a1f2e, #0d1220);
-            border-radius: 20px; padding: 30px;
-            max-width: 700px; width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            border: 1px solid #2a3050;
-        }
-        h1 {
-            text-align: center; color: #f0e6d0;
-            font-size: 1.6em; margin-bottom: 5px;
-            letter-spacing: 2px;
-        }
-        .subtitle {
-            text-align: center; color: #8899bb;
-            font-size: 0.85em; margin-bottom: 20px;
-        }
-        canvas {
-            display: block; width: 100%;
-            border-radius: 12px;
-            background: #000;
-            cursor: grab; touch-action: none;
-        }
-        canvas:active { cursor: grabbing; }
-        .controls {
-            margin-top: 18px;
-            display: flex; flex-direction: column; gap: 12px;
-        }
-        .control-row {
-            display: flex; align-items: center; gap: 14px;
-            flex-wrap: wrap; justify-content: center;
-        }
-        .control-row label {
-            color: #b0c0dd; font-size: 0.85em; white-space: nowrap;
-        }
-        input[type="range"] {
-            flex: 1; min-width: 120px;
-            -webkit-appearance: none; height: 4px;
-            background: linear-gradient(90deg, #2a3050, #ffaa44);
-            border-radius: 2px; outline: none;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 18px; height: 18px;
-            background: radial-gradient(#ffcc66, #dd8800);
-            border-radius: 50%; cursor: pointer;
-            box-shadow: 0 0 12px #ff880088;
-        }
-        input[type="range"]::-moz-range-thumb {
-            width: 18px; height: 18px;
-            background: radial-gradient(#ffcc66, #dd8800);
-            border-radius: 50%; cursor: pointer; border: none;
-        }
-        .btn {
-            background: linear-gradient(145deg, #2a3050, #1a1f35);
-            color: #c0d0ee; border: 1px solid #3a4060;
-            padding: 8px 18px; border-radius: 8px;
-            cursor: pointer; font-size: 0.85em;
-            transition: all 0.2s;
-        }
-        .btn:hover { background: linear-gradient(145deg, #3a4060, #2a3050); color: #fff; }
-        .btn.active { background: linear-gradient(145deg, #c87700, #a05500); border-color: #ffaa44; color: #fff; }
-        .stats {
-            display: flex; justify-content: space-around;
-            color: #b0c0dd; font-size: 0.85em; text-align: center;
-            flex-wrap: wrap; gap: 8px;
-        }
-        .stats span { display: flex; flex-direction: column; }
-        .stats .val { color: #f0e6d0; font-size: 1.2em; font-weight: bold; }
-        .stats .val.full { color: #ff8844; }
-        .stats .val.total { color: #ffcc44; text-shadow: 0 0 20px #ff880088; }
-        .phase-label {
-            text-align: center; font-size: 1.1em; font-weight: bold;
-            color: #ffcc66; margin-top: 8px;
-            min-height: 1.6em;
-        }
-        .speed-control {
-            display: flex; align-items: center; gap: 8px;
-        }
-        .speed-control span {
-            color: #8899bb; font-size: 0.75em; cursor: pointer;
-            padding: 2px 8px; border-radius: 4px;
-            transition: all 0.2s;
-        }
-        .speed-control span:hover { color: #fff; background: #2a305055; }
-        .speed-control span.active { color: #ffcc66; background: #2a305088; }
-        @media (max-width: 500px) {
-            .container { padding: 15px; }
-            h1 { font-size: 1.2em; }
-            .stats { font-size: 0.75em; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📋 課外活動每週安排表 — 2026-2027年度</title>
+<style>
+:root {
+  --bg:#0a0e17; --card:#111827; --card2:#1a2332; --border:#1e293b;
+  --text:#e2e8f0; --muted:#64748b; --accent:#38bdf8;
+  --green:#22c55e; --red:#ef4444; --yellow:#eab308; --orange:#f97316;
+  --purple:#a855f7; --blue:#3b82f6; --cyan:#06b6d4;
+  --radius:10px;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.6; min-height:100vh;
+}
+header {
+  position:sticky; top:0; z-index:100;
+  background:rgba(10,14,23,.95); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:12px 20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+}
+.header-left { display:flex; align-items:center; gap:12px; }
+h1 { font-size:18px; font-weight:700; }
+.tabs { display:flex; gap:4px; margin:16px 0; flex-wrap:wrap; }
+.tab {
+  padding:8px 18px; border:1px solid var(--border); border-radius:8px;
+  background:var(--card); color:var(--muted); cursor:pointer; font-size:14px; font-weight:600;
+  transition:all .15s;
+}
+.tab.active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+.tab:hover { opacity:.85; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+.container { max-width:1200px; margin:0 auto; padding:20px; }
+.activity-card {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:20px; margin-bottom:16px;
+}
+.activity-header {
+  display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:8px; margin-bottom:12px;
+}
+.activity-title { font-size:18px; font-weight:700; }
+.activity-id {
+  font-size:12px; padding:3px 10px; border-radius:10px; font-weight:600;
+  background:rgba(56,189,248,.15); color:var(--accent);
+}
+.activity-type {
+  font-size:11px; padding:2px 8px; border-radius:8px; font-weight:600;
+}
+.type-team { background:rgba(168,85,247,.15); color:var(--purple); }
+.type-interest { background:rgba(34,197,94,.15); color:var(--green); }
+.type-support { background:rgba(234,179,8,.15); color:var(--yellow); }
+.type-care { background:rgba(100,116,139,.15); color:var(--muted); }
+.type-other { background:rgba(251,146,60,.15); color:var(--orange); }
+.info-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px; margin-bottom:12px;
+}
+.info-item {
+  background:var(--card2); border-radius:6px; padding:8px 12px;
+}
+.info-label { font-size:11px; color:var(--muted); }
+.info-value { font-size:14px; font-weight:600; margin-top:2px; }
+.dates-box {
+  background:var(--card2); border-radius:6px; padding:10px 14px; margin-bottom:12px;
+  font-size:13px; color:var(--muted); line-height:1.8;
+}
+.dates-label { font-size:11px; color:var(--accent); font-weight:600; margin-bottom:4px; }
+.student-count {
+  display:inline-block; padding:3px 12px; border-radius:12px;
+  font-size:13px; font-weight:600; margin-bottom:8px;
+}
+.count-has { background:rgba(34,197,94,.15); color:var(--green); }
+.count-zero { background:rgba(239,68,68,.12); color:var(--red); }
+.student-table { width:100%; border-collapse:collapse; font-size:13px; }
+.student-table th {
+  background:var(--bg); color:var(--muted); font-size:11px; padding:6px 10px; text-align:left;
+  text-transform:uppercase; letter-spacing:0.5px;
+}
+.student-table td { padding:6px 10px; border-top:1px solid var(--border); }
+.student-table tr:hover { background:rgba(56,189,248,.03); }
+.note { font-size:12px; color:var(--muted); padding:8px; background:rgba(234,179,8,.08); border-radius:6px; border-left:3px solid var(--yellow); margin-top:8px; }
+.footer { text-align:center; padding:16px; color:var(--muted); font-size:12px; }
+@media print {
+  header, .tabs { display:none; }
+  .tab-content { display:block !important; }
+  body { background:#fff; color:#000; }
+  .activity-card { border:1px solid #ccc; break-inside:avoid; }
+}
+@media (max-width:640px) { .info-grid { grid-template-columns:1fr; } }
+</style>
 </head>
 <body>
+<header>
+  <div class="header-left">
+    <span style="font-size:22px;">📋</span>
+    <h1>課外活動每週安排表</h1>
+    <span style="font-size:11px;padding:3px 10px;border-radius:10px;background:rgba(168,85,247,.15);color:var(--purple);font-weight:600;">2026-2027年度</span>
+  </div>
+  <span style="font-size:12px;color:var(--muted);">資料來源：babycomputer.vercel.app · 製表日期：19/9/2026</span>
+</header>
 <div class="container">
-    <h1>☀️ 日蝕模擬器</h1>
-    <div class="subtitle">拖曳月球 · 觀察日蝕全過程</div>
-    <canvas id="c" width="640" height="480"></canvas>
-
-    <div class="phase-label" id="phaseLabel">🌞 正常日照</div>
-
-    <div class="controls">
-        <div class="control-row">
-            <label>🌙 位置</label>
-            <input type="range" id="posSlider" min="0" max="100" value="100">
-        </div>
-        <div class="control-row">
-            <button class="btn active" id="playBtn">▶ 播放</button>
-            <button class="btn" id="resetBtn">↺ 重置</button>
-            <div class="speed-control">
-                <span data-speed="0.3">0.3×</span>
-                <span data-speed="0.5">0.5×</span>
-                <span data-speed="1" class="active">1×</span>
-                <span data-speed="2">2×</span>
-                <span data-speed="4">4×</span>
-            </div>
-        </div>
-        <div class="stats">
-            <span>覆蓋率 <span class="val" id="coverageVal">0.0%</span></span>
-            <span>亮度 <span class="val" id="brightnessVal">100%</span></span>
-            <span>食分 <span class="val" id="magnitudeVal">0.00</span></span>
-        </div>
-    </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchDayTab(this,'mon')">星期一</div>
+    <div class="tab" onclick="switchDayTab(this,'tue')">星期二</div>
+    <div class="tab" onclick="switchDayTab(this,'wed')">星期三</div>
+    <div class="tab" onclick="switchDayTab(this,'thu')">星期四</div>
+    <div class="tab" onclick="switchDayTab(this,'fri')">星期五</div>
+    <div class="tab" onclick="switchDayTab(this,'sat')">星期六</div>
+  </div>
+  <div id="content"></div>
+  <div class="footer">課外活動每週安排表 · 2026-2027年度 · 共 51 個活動小組 · 資料僅供參考</div>
 </div>
-
 <script>
-    const canvas = document.getElementById('c');
-    const ctx = canvas.getContext('2d');
-    const posSlider = document.getElementById('posSlider');
-    const phaseLabel = document.getElementById('phaseLabel');
-    const coverageVal = document.getElementById('coverageVal');
-    const brightnessVal = document.getElementById('brightnessVal');
-    const magnitudeVal = document.getElementById('magnitudeVal');
-    const playBtn = document.getElementById('playBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const speedSpans = document.querySelectorAll('.speed-control span');
+var EMBEDDED_DATA = {"generated_at": "2026-09-19", "source": "https://babycomputer.vercel.app/", "total_groups": 51, "groups": [{"id": "S001", "name": "獅藝校隊", "type": "隊伍/校隊", "day": "星期一", "time": "15:45-17:15", "venue": "N702", "teacher": "陳秀烽主任", "dates": "10月5日，10月12日、10月26日 11月2日，11月23日，11月30日 12月7日，12月14日 1月4日，1月11日，1月18日，2月22日 3月15日，3月22日 4月12日，4月19日 5月3日，5月10日，5月17日，5月24日 6月14日", "student_count": 15}, {"id": "M001", "name": "合唱團校隊", "type": "隊伍/校隊", "day": "星期一", "time": "15:45-17:15", "venue": "N601(音樂室)", "teacher": "羅天慧老師", "dates": "9月28日 10月5日，10月12日、10月26日 11月2日，11月23日，11月30日 12月7日 1月4日，1月11日，1月18日 2月1日，2月22日 3月15日，3月22日 4月12日，4月9日 5月3日，5月10日，5月17日，5月24日", "student_count": 29}, {"id": "P001", "name": "乒乓球校隊", "type": "隊伍/校隊", "day": "星期一", "time": "15:30-17:00", "venue": "七樓乒乓球區", "teacher": "林文華主任", "dates": "9月28日 10月5日，10月12日、10月26日 11月2日，11月23日，11月30日 12月7日，12月14日 1月4日，1月11日，1月18日 2月11日，2月22日 3月15日，3月22日 4月12日，4月9日 5月3日，5月10日，5月17，5月24日", "student_count": 9}, {"id": "G767", "name": "小六成長的天空", "type": "支援小組", "day": "星期一", "time": "15:45-17:15", "venue": "樂藝坊(2區)", "teacher": "王嘉雯姑娘", "dates": "1/2、22/2、15/3、22/3、12/4、19/4、3/5、10/5、24/5", "student_count": 14}, {"id": "S014A", "name": "中文讀寫樂小組(四年級A組)", "type": "支援小組", "day": "星期一", "time": "15:45-16:45", "venue": "多用途活動室A（601）", "teacher": "張倩怡輔導員、陳秀烽主任", "dates": "10月5日，10月12日，10月26日，11月2日，11月23日，11月30日，12月7日，12月14日", "student_count": 10}, {"id": "S014B", "name": "中文讀寫樂小組(四年級B組)", "type": "支援小組", "day": "星期一", "time": "15:45-16:45", "venue": "多用途活動室A（601）", "teacher": "張倩怡輔導員、陳秀烽主任", "dates": "1月11日，1月18日，2月22日，3月15日，3月22日，4月12日，4月19日，5月3日", "student_count": 10}, {"id": "S016A", "name": "中文讀寫樂小組(六年級A組)", "type": "支援小組", "day": "星期一", "time": "15:45-16:45", "venue": "多用途活動室A（601）", "teacher": "鄧紫晴輔導員、陳秀烽主任", "dates": "9月30日，10月7日，10月14日，10月21日，10月28日，11月4日，11月18日，11月25日", "student_count": 10}, {"id": "ASCP001", "name": "課後託管班(GP1)", "type": "託管班", "day": "星期一至五", "time": "15:30-18:30", "venue": "2A課室(301)", "teacher": "林曉鋒主任", "dates": "全學年逢星期一至五", "student_count": 0}, {"id": "ASCP002", "name": "課後託管班(GP2)", "type": "託管班", "day": "星期一至五", "time": "15:30-18:30", "venue": "3A課室(302)", "teacher": "林曉鋒主任", "dates": "全學年逢星期一至五", "student_count": 0}, {"id": "ASCP003", "name": "課後託管班(GP3)", "type": "託管班", "day": "星期一至五", "time": "15:30-18:30", "venue": "4A課室(303)", "teacher": "林曉鋒主任", "dates": "全學年逢星期一至五", "student_count": 0}, {"id": "ASCP004", "name": "課後託管班(GP4)", "type": "託管班", "day": "星期一至五", "time": "15:30-18:30", "venue": "3B課室(305)", "teacher": "林曉鋒主任", "dates": "全學年逢星期一至五", "student_count": 0}, {"id": "ASCP005", "name": "課後託管班(GP5)", "type": "託管班", "day": "星期一至五", "time": "15:30-18:30", "venue": "4A課室(306)", "teacher": "林曉鋒主任", "dates": "全學年逢星期一至五", "student_count": 0}, {"id": "G419", "name": "正向家長運動(一)「管教與自我照顧講座」及「好好充電-深度休息工作坊」", "type": "其他", "day": "星期一、星期五", "time": "08:30-11:30", "venue": "七樓盧碧珊堂", "teacher": "王嘉雯社工姑娘", "dates": "2/10", "student_count": 0}, {"id": "S002", "name": "光輝樂隊校隊", "type": "隊伍/校隊", "day": "星期二", "time": "15:45-17:15", "venue": "N702", "teacher": "曾賜豪輔導員、陳秀烽主任", "dates": "9月29日 10月6日，10月13日，10月20日，10月27日 11月3日，11月24日 12月1日，12月8日，12月15日 1月5日，1月12日，1月19日，1月26日 2月16日，2月23日 3月16日，3月23日 4月6日，4月13日、4月20日，4月27日 5月4日，5月11日，5月18日，5月25日", "student_count": 20}, {"id": "S003", "name": "中文讀寫樂小組(四年級)", "type": "支援小組", "day": "星期二", "time": "15:45-16:45", "venue": "多用途活動室A（601）", "teacher": "張倩怡輔導員、陳秀烽主任", "dates": "9/10、16/10、23/10、30/10", "student_count": 0}, {"id": "C001", "name": "粵語集誦校隊", "type": "隊伍/校隊", "day": "星期二", "time": "15:30-16:30", "venue": "N601(音樂室)", "teacher": "張雅欣老師", "dates": "9月29日 10月6日，10月13日，10月20日，10月27日 11月3日，11月24日 12月11日，12月8日，12月15日", "student_count": 40}, {"id": "ST001", "name": "STEAM校隊", "type": "隊伍/校隊", "day": "星期二", "time": "15:45-16:45", "venue": "科學室B(405)", "teacher": "黃文麗主任、李曉瑩老師、黃竣坪老師", "dates": "2026/10/6 2026/10/13 2026/10/20 2026/10/27 2026/11/3 2026/11/24 2026/12/1 2026/12/8 2026/12/15 2027/1/12 2027/1/19 2027/1/26 2026/2/23 2027/3/16 2027/4/13 2027/4/20", "student_count": 14}, {"id": "G812", "name": "小五成長的天空", "type": "支援小組", "day": "星期二", "time": "15:45-17:15", "venue": "樂藝坊(2區)", "teacher": "王嘉雯姑娘", "dates": "13/10、20/10、27/10、3/11、24/11、1/12、15/12、5/1、19/1", "student_count": 16}, {"id": "M002A", "name": "古箏小組", "type": "興趣小組", "day": "星期二", "time": "15:45-17:00", "venue": "602", "teacher": "羅天慧老師", "dates": "6/10、13/10、20/10、27/10、3/11、24/11、11/12、8/12、15/12、5/1、12/1、19/1、26/1、2/2、16/2、23/2、16/3、23/3、6/4、13/4、20/4、27/4、4/5、11/5、18/5、25/5", "student_count": 9}, {"id": "G750", "name": "4D Frame 創意解難課程", "type": "興趣小組", "day": "星期二", "time": "15:45-17:15", "venue": "七樓創科世界", "teacher": "何曉妍老師、黃紀寧老師、黃文麗主任、外聘教練", "dates": "10月13日、10月20日、11月3日、12月8日 1月12日、12月19日、2月23日、3月23日、4月13日、4月20日、4月27日、5月4日", "student_count": 0}, {"id": "G445", "name": "籃球校隊", "type": "興趣小組", "day": "星期二、星期四", "time": "15:30-17:00", "venue": "德育廣場", "teacher": "陸作恩老師", "dates": "9/10、16/10、23/10、30/10", "student_count": 12}, {"id": "M003", "name": "粵劇校隊", "type": "隊伍/校隊", "day": "星期三", "time": "15:45-17:15", "venue": "七樓盧碧珊堂", "teacher": "羅天慧老師", "dates": "7/10、21/10、28/10、4/11、18/11、25/11、2/12、9/12、16/12、6/1、13/1、20/1、27/1、17/2、24/2、10/3、17/3、24/3、7/4、14/4、21/4、28/4、5/5、12/5、19/5、26/5、16/6", "student_count": 7}, {"id": "A001", "name": "水墨畫校隊", "type": "隊伍/校隊", "day": "星期三", "time": "15:30-16:30", "venue": "N404(視藝室)", "teacher": "黃燕君老師", "dates": "21/10、28/10、4/11、25/11、2/12、9/12、13/1、20/1、27/1、17/2、24/2、17/3、24/3、7/4、14/4、28/4、5/5、12/5", "student_count": 20}, {"id": "P002A", "name": "田徑校隊 (平日班)", "type": "隊伍/校隊", "day": "星期三", "time": "15:30-17:00", "venue": "葵涌運動場", "teacher": "陸作恩老師", "dates": "9月16日，9月23日，9月30日，10月7日，10月14日，10月21日，10月28日", "student_count": 28}, {"id": "G867", "name": "中國舞", "type": "興趣小組", "day": "星期三", "time": "15:45-17:45", "venue": "N601(音樂室)", "teacher": "王文欣主任、外聘教練", "dates": "23/9, 30/9, 7/10, 14/10, 21/10, 28/10, 4/11, 18/11, 25/11, 2/12, 9/12, 16/12 6/1, 13/1, 20/1", "student_count": 14}, {"id": "S013", "name": "中文讀寫樂小組(三年級)", "type": "支援小組", "day": "星期三", "time": "15:45-16:45", "venue": "多用途活動室A（601）", "teacher": "鄧紫晴輔導員、陳秀烽主任", "dates": "10月5日，10月12日，10月26日，11月2日，11月23日，11月30日，12月7日，12月14日", "student_count": 7}, {"id": "S016B", "name": "中文讀寫樂小組(六年級B組)", "type": "支援小組", "day": "星期三", "time": "15:45-16:45", "venue": "多用途活動室A（601）", "teacher": "鄧紫晴輔導員、陳秀烽主任", "dates": "12月9日，12月16日，1月6日，1月13日，1月20日，1月27日，2月17日，2月24日", "student_count": 10}, {"id": "M004", "name": "中國鼓校隊", "type": "隊伍/校隊", "day": "星期四", "time": "15:30-17:00", "venue": "N602", "teacher": "周芷瑩老師", "dates": "9月3日，9月10日，9月17日，9月24日 10月8日，10月15日，10月22日，10月29日 11月5日，11月19，11月26日 12月3日，12月10日 1月14日，1月21，1月28日 2月18日，2月25日 3月11日，3月18日 4月8日，4月15日，4月22日，4月29日 5月20日，5月27日 6月10日，6月17日，6月24日", "student_count": 13}, {"id": "A002", "name": "視藝校隊", "type": "隊伍/校隊", "day": "星期四", "time": "15:30-17:00", "venue": "N404(視藝室)", "teacher": "黃燕君老師、朱慧敏老師", "dates": "8/10、22/10、29/10、11月19、26/11、3/12、14/1、1月21、28/1、18/2、25/2、11/3、18/3、8/4、15/4、22/4、29/4、6/5、20/5", "student_count": 23}, {"id": "P003", "name": "游泳校隊", "type": "隊伍/校隊", "day": "星期四", "time": "15:30-17:00", "venue": "游泳池", "teacher": "林文華主任", "dates": "9月24日 10月8日，10月22日 11月5日，11月19日，11月26日 12月3日 1月14日，1月21日，1月28日 2月18日，2月25日 3月11日，3月18日 4月8日，4月15日，4月22日，4月29日", "student_count": 12}, {"id": "G731", "name": "小四成長的天空", "type": "支援小組", "day": "星期四", "time": "15:45-17:15", "venue": "N702", "teacher": "王嘉雯姑娘", "dates": "8/10、22/10、29/10、5/11、19/11、3/12、10/12、14/1、21/1、11/3、18/3", "student_count": 31}, {"id": "S015A", "name": "中文讀寫樂小組(五年級A組)", "type": "支援小組", "day": "星期四", "time": "15:45-16:45", "venue": "多用途活動室A（601）", "teacher": "鄧紫晴輔導員、陳秀烽主任", "dates": "10月8日，10月15日，10月22日，10月29日，11月5日，11月19日，11月26日，12月3日", "student_count": 7}, {"id": "S015B", "name": "中文讀寫樂小組(五年級B組)", "type": "支援小組", "day": "星期四", "time": "15:45-16:45", "venue": "多用途活動室A（601）", "teacher": "鄧紫晴輔導員、陳秀烽主任", "dates": "1月14日，1月21日，1月28日，2月18日，2月25日，3月11日，3月18日，4月8日", "student_count": 7}, {"id": "P004", "name": "花式跳繩校隊", "type": "隊伍/校隊", "day": "星期五", "time": "15:30-17:00", "venue": "七樓盧碧珊堂", "teacher": "黃紀寕老師，陸作恩老師", "dates": "2/10，9/10，23/10，30/10，6/11，20/11，11/12，15/1，22/1，29/1，19/2，26/2 12/3，19/3，9/4，16/4，30/4，14/5，21/5、28/5", "student_count": 22}, {"id": "G384", "name": "西班牙語班", "type": "隊伍/校隊", "day": "星期五", "time": "15:30-17:00", "venue": "6B課室(502)", "teacher": "周轉花老師", "dates": "2/10，9/10，23/10，30/10，6/11，20/11，11/12，15/1，22/1，29/1，19/2，26/2 12/3，19/3，9/4，16/4，30/4，14/5，21/5、28/5", "student_count": 18}, {"id": "M002B", "name": "古箏 (深造班)", "type": "興趣小組", "day": "星期五", "time": "14:30-15:30", "venue": "N701", "teacher": "羅天慧老師", "dates": "2/10，9/10，23/10，30/10，6/11，20/11，11/12，15/1，22/1，29/1，19/2，26/2 12/3，19/3，9/4，16/4，30/4，14/5，21/5、28/5", "student_count": 0}, {"id": "G444", "name": "普通話皮影戲", "type": "興趣小組", "day": "星期五", "time": "15:45-17:15", "venue": "N601(音樂室)", "teacher": "外聘教練、林曉烽", "dates": "10月2日，10月9日，10月23日，10月30日 11月6日，11月20日 12月11日 1月15日，1月22日，1月29日 2月19日，1月26日 3月12日，3月19日 4月9日，4月16日，4月30日 5月14日，5月21日、5月28日", "student_count": 13}, {"id": "S003A", "name": "喜伴同行小組(A組)", "type": "支援小組", "day": "星期五", "time": "13:30-15:00", "venue": "MMLC(505)", "teacher": "張倩怡輔導員、陳秀烽主任", "dates": "9月11日，9月18日，10月2日，10月9日，10月23日，10月30日，11月6日，11月20日，12月4日，12月11日 1月15日，1月22日，1月29日", "student_count": 6}, {"id": "S003B", "name": "喜伴同行小組(B組)", "type": "支援小組", "day": "星期五", "time": "15:15-16:45", "venue": "MMLC(505)", "teacher": "鄧紫晴輔導員、陳秀烽主任", "dates": "9月11日，9月18日，10月2日，10月9日，10月23日，10月30日，11月6日，11月20日，12月4日，12月11日 1月15日，1月22日，1月29日", "student_count": 6}, {"id": "S012", "name": "中文讀寫樂小組(二年級)", "type": "支援小組", "day": "星期五", "time": "14:30-15:30", "venue": "MMLC(505)", "teacher": "張倩怡輔導員、陳秀烽主任", "dates": "2月19日，2月26日，3月12日，3月19日，4月9日，4月16日，4月30日，5月7日", "student_count": 8}, {"id": "ST002", "name": "奧數拔尖培訓隊", "type": "興趣小組", "day": "星期六", "time": "15:30-16:45", "venue": "5A課室(403)", "teacher": "何曉妍老師", "dates": "3/10，10/10，24/10，31/10，7/11，21/11 12/12 ，16/1，30/1，20/2", "student_count": 13}, {"id": "P005", "name": "跆拳道校隊班", "type": "興趣小組", "day": "星期六", "time": "09:30-11:00", "venue": "七樓盧碧珊堂", "teacher": "外聘黑帶總教練、林文華主任", "dates": "3/10，10/10，24/10，31/10，7/11，21/11 12/12 ，16/1，30/1，20/2", "student_count": 0}, {"id": "P002B", "name": "田徑校隊 (週六精訓班)", "type": "隊伍/校隊", "day": "星期六", "time": "09:00-10:30", "venue": "葵涌運動場", "teacher": "陸作恩老師", "dates": "3/10，10/10，24/10", "student_count": 28}, {"id": "G618", "name": "足球興趣班", "type": "興趣小組", "day": "星期六", "time": "15:30-17:00", "venue": "德育廣場", "teacher": "林文華主任、外聘教練", "dates": "3/10，10/10，24/10，31/10，7/11，21/11 12/12 ，16/1，30/1，20/2", "student_count": 0}, {"id": "G970", "name": "足球校隊", "type": "隊伍/校隊", "day": "星期六", "time": "11:00-12:30", "venue": "2A課室(301)", "teacher": "林文華、外聘教練", "dates": "3/10，10/10，24/10，31/10，7/11，21/11 12/12 ，16/1，30/1，20/2", "student_count": 10}, {"id": "G247", "name": "書法班", "type": "興趣小組", "day": "星期六", "time": "08:30-09:30", "venue": "4A課室(306)", "teacher": "林文華、外聘教練", "dates": "3/10，10/10，24/10，31/10，7/11，21/11 12/12 ，16/1，30/1，20/2", "student_count": 0}, {"id": "G340", "name": "水墨畫A班", "type": "興趣小組", "day": "星期六", "time": "09:30-10:30", "venue": "4A課室(303)", "teacher": "林文華主任、外聘教練", "dates": "3/10，10/10，24/10，31/10，7/11，21/11 12/12 ，16/1，30/1，20/2", "student_count": 0}, {"id": "G539", "name": "水墨畫B", "type": "興趣小組", "day": "星期六", "time": "11:40-12:40", "venue": "4A課室(303)", "teacher": "林文華主任、外聘教練", "dates": "3/10，10/10，24/10，31/10，7/11，21/11 12/12 ，16/1，30/1，20/2", "student_count": 0}, {"id": "G775", "name": "小結他班", "type": "興趣小組", "day": "星期六", "time": "11:40-12:40", "venue": "3A課室(302)", "teacher": "林文華主任、外聘教練", "dates": "10月3日，10月10日，10月24日，10月31日 11月7日，11月21日 12月12日 1月16，1月30日 2月20日", "student_count": 0}, {"id": "G649", "name": "英文拼音班", "type": "興趣小組", "day": "星期六", "time": "08:30-09:30", "venue": "2A課室(301)", "teacher": "林文華、外聘教練", "dates": "10月3日，10月10日，10月24日，10月31日 11月7日，11月21日 12月12日 1月16，1月30日 2月20日", "student_count": 0}, {"id": "G412", "name": "劍橋英語考試班", "type": "興趣小組", "day": "星期六", "time": "09:30-10:30", "venue": "4C課室(406)", "teacher": "林文華主任、外聘教練", "dates": "10月3日，10月10日，10月24日，10月31日 11月7日，11月21日 12月12日 1月16，1月30日 2月20日", "student_count": 0}], "s001_students": [{"no": 1, "class": "3A", "id": "19", "name": "曾御", "gender": "M"}, {"no": 2, "class": "4A", "id": "06", "name": "朱愷桐", "gender": "F"}, {"no": 3, "class": "4B", "id": "05", "name": "何慶添", "gender": "M"}, {"no": 4, "class": "4B", "id": "13", "name": "李晉宇", "gender": "M"}, {"no": 5, "class": "4C", "id": "19", "name": "吴佳祐", "gender": "M"}, {"no": 6, "class": "5B", "id": "16", "name": "許梓灝", "gender": "M"}, {"no": 7, "class": "5C", "id": "05", "name": "張子鐸", "gender": "M"}, {"no": 8, "class": "5D", "id": "04", "name": "陈铖", "gender": "M"}, {"no": 9, "class": "6A", "id": "07", "name": "蔡梓天", "gender": "M"}, {"no": 10, "class": "6A", "id": "27", "name": "曾維琸", "gender": "M"}, {"no": 11, "class": "6B", "id": "02", "name": "陳銘", "gender": "M"}, {"no": 12, "class": "6B", "id": "11", "name": "梁宇熙", "gender": "M"}, {"no": 13, "class": "6C", "id": "09", "name": "龔沛豪", "gender": "M"}, {"no": 14, "class": "6C", "id": "10", "name": "賴曉瑜", "gender": "F"}, {"no": 15, "class": "6C", "id": "23", "name": "楊淮智", "gender": "M"}], "all_students": {"S001": [{"no": "1", "class": "3A", "id": "19", "name": "曾御", "gender": "M"}, {"no": "2", "class": "4A", "id": "06", "name": "朱愷桐", "gender": "F"}, {"no": "3", "class": "4B", "id": "05", "name": "何慶添", "gender": "M"}, {"no": "4", "class": "4B", "id": "13", "name": "李晉宇", "gender": "M"}, {"no": "5", "class": "4C", "id": "19", "name": "吴佳祐", "gender": "M"}, {"no": "6", "class": "5B", "id": "16", "name": "許梓灝", "gender": "M"}, {"no": "7", "class": "5C", "id": "05", "name": "張子鐸", "gender": "M"}, {"no": "8", "class": "5D", "id": "04", "name": "陈铖", "gender": "M"}, {"no": "9", "class": "6A", "id": "07", "name": "蔡梓天", "gender": "M"}, {"no": "10", "class": "6A", "id": "27", "name": "曾維琸", "gender": "M"}, {"no": "11", "class": "6B", "id": "02", "name": "陳銘", "gender": "M"}, {"no": "12", "class": "6B", "id": "11", "name": "梁宇熙", "gender": "M"}, {"no": "13", "class": "6C", "id": "09", "name": "龔沛豪", "gender": "M"}, {"no": "14", "class": "6C", "id": "10", "name": "賴曉瑜", "gender": "F"}, {"no": "15", "class": "6C", "id": "23", "name": "楊淮智", "gender": "M"}], "M001": [{"no": "1", "class": "2A", "id": "12", "name": "凌晨悦", "gender": "F"}, {"no": "2", "class": "2A", "id": "13", "name": "毛詩玥", "gender": "F"}, {"no": "3", "class": "4B", "id": "16", "name": "莫子瑜", "gender": "F"}, {"no": "4", "class": "5A", "id": "13", "name": "馬業超", "gender": "M"}, {"no": "5", "class": "5A", "id": "24", "name": "邱美林", "gender": "F"}, {"no": "6", "class": "5A", "id": "11", "name": "梁諾澄", "gender": "F"}, {"no": "7", "class": "5B", "id": "12", "name": "柳汝姗", "gender": "F"}, {"no": "8", "class": "5B", "id": "21", "name": "黃敏瑜", "gender": "F"}, {"no": "9", "class": "5C", "id": "04", "name": "陳文杰", "gender": "M"}, {"no": "10", "class": "6A", "id": "15", "name": "勞子瑜", "gender": "F"}, {"no": "11", "class": "6A", "id": "19", "name": "謝采宜", "gender": "F"}, {"no": "12", "class": "6A", "id": "12", "name": "李若嵐", "gender": "F"}, {"no": "13", "class": "6A", "id": "18", "name": "濮亦菲", "gender": "F"}, {"no": "14", "class": "6A", "id": "20", "name": "謝善童", "gender": "F"}, {"no": "15", "class": "6B", "id": "10", "name": "劉靖晞", "gender": "F"}, {"no": "16", "class": "6B", "id": "04", "name": "陳紫欣", "gender": "F"}, {"no": "17", "class": "6B", "id": "07", "name": "何芷凝", "gender": "F"}, {"no": "18", "class": "5D", "id": "10", "name": "郭宇陽", "gender": "M"}, {"no": "19", "class": "4C", "id": "17", "name": "彭景麟", "gender": "M"}, {"no": "20", "class": "4A", "id": "21", "name": "吳依怡", "gender": "F"}, {"no": "21", "class": "4C", "id": "06", "name": "鄺穎琪", "gender": "F"}, {"no": "22", "class": "4B", "id": "12", "name": "梁思雨", "gender": "F"}, {"no": "23", "class": "5A", "id": "22", "name": "黃弘順", "gender": "M"}, {"no": "24", "class": "4C", "id": "07", "name": "林文雅", "gender": "F"}, {"no": "25", "class": "5B", "id": "09", "name": "楊文希", "gender": "F"}, {"no": "26", "class": "4A", "id": "04", "name": "陳芯如", "gender": "F"}, {"no": "27", "class": "3B", "id": "08", "name": "黃鈺涵", "gender": "F"}, {"no": "28", "class": "3B", "id": "17", "name": "吳瑾瑜", "gender": "F"}], "ST002": [{"no": "1", "class": "5A", "id": "04", "name": "陳睿", "gender": "M"}, {"no": "2", "class": "5A", "id": "07", "name": "馮峻麒", "gender": "M"}, {"no": "3", "class": "5A", "id": "12", "name": "梁順捷", "gender": "M"}, {"no": "4", "class": "5A", "id": "22", "name": "黃弘順", "gender": "M"}, {"no": "5", "class": "5A", "id": "27", "name": "鄭培莹", "gender": "F"}, {"no": "6", "class": "5B", "id": "19", "name": "魏熙靖", "gender": "M"}, {"no": "7", "class": "5B", "id": "15", "name": "沈田昊", "gender": "M"}, {"no": "8", "class": "6A", "id": "14", "name": "廖安澄", "gender": "M"}, {"no": "9", "class": "6B", "id": "06", "name": "馮昊賢", "gender": "M"}, {"no": "10", "class": "6B", "id": "14", "name": "林子城", "gender": "M"}, {"no": "11", "class": "6C", "id": "17", "name": "黃志宏", "gender": "M"}, {"no": "12", "class": "6D", "id": "04", "name": "陳智鵬", "gender": "M"}, {"no": "13", "class": "6D", "id": "07", "name": "許弘鏸", "gender": "F"}], "S002": [{"no": "1", "class": "3B", "id": "02", "name": "ANEEFAH IMAN", "gender": "F"}, {"no": "2", "class": "3B", "id": "09", "name": "KHAN HAIFA", "gender": "F"}, {"no": "3", "class": "4A", "id": "05", "name": "鄭嘉熙", "gender": "M"}, {"no": "4", "class": "4B", "id": "11", "name": "李祉昕", "gender": "F"}, {"no": "5", "class": "4B", "id": "18", "name": "顏仲晞", "gender": "M"}, {"no": "6", "class": "4C", "id": "05", "name": "KHAN SANAYA", "gender": "F"}, {"no": "7", "class": "5A", "id": "03", "name": "陳凱琳", "gender": "F"}, {"no": "8", "class": "5B", "id": "09", "name": "楊文希", "gender": "F"}, {"no": "9", "class": "5B", "id": "18", "name": "曹香凝", "gender": "F"}, {"no": "10", "class": "5C", "id": "12", "name": "吳書羽", "gender": "F"}, {"no": "11", "class": "5D", "id": "09", "name": "張栢言", "gender": "M"}, {"no": "12", "class": "5D", "id": "10", "name": "郭宇陽", "gender": "M"}, {"no": "13", "class": "6A", "id": "27", "name": "曾維琸", "gender": "M"}, {"no": "14", "class": "6B", "id": "04", "name": "陳紫欣", "gender": "F"}, {"no": "15", "class": "6C", "id": "01", "name": "陳煜敏", "gender": "F"}, {"no": "16", "class": "6C", "id": "02", "name": "陳庭欣", "gender": "F"}, {"no": "17", "class": "6C", "id": "07", "name": "何芷藍", "gender": "F"}, {"no": "18", "class": "6D", "id": "05", "name": "鄭嘉瑜", "gender": "F"}, {"no": "19", "class": "6D", "id": "07", "name": "許弘鏸", "gender": "F"}, {"no": "20", "class": "6D", "id": "18", "name": "顏仲懃", "gender": "M"}], "S003": [], "C001": [{"no": "1", "class": "3A", "id": "05", "name": "樊家睿", "gender": "M"}, {"no": "2", "class": "3A", "id": "06", "name": "何禹明", "gender": "F"}, {"no": "3", "class": "3A", "id": "09", "name": "林芷晴", "gender": "F"}, {"no": "4", "class": "3A", "id": "11", "name": "劉悅晴", "gender": "F"}, {"no": "5", "class": "3A", "id": "17", "name": "蘇俊碩", "gender": "M"}, {"no": "6", "class": "3A", "id": "18", "name": "鄧智盛", "gender": "M"}, {"no": "7", "class": "3A", "id": "20", "name": "謝穎妍", "gender": "F"}, {"no": "8", "class": "3B", "id": "08", "name": "黃鈺涵", "gender": "F"}, {"no": "9", "class": "3B", "id": "09", "name": "KHAN HAIFA", "gender": "F"}, {"no": "10", "class": "3B", "id": "11", "name": "吳昕淇", "gender": "F"}, {"no": "11", "class": "3B", "id": "17", "name": "吳瑾瑜", "gender": "F"}, {"no": "12", "class": "3B", "id": "18", "name": "楊語馨", "gender": "F"}, {"no": "13", "class": "3B", "id": "20", "name": "余樂熙", "gender": "M"}, {"no": "14", "class": "4A", "id": "02", "name": "陳韋銘", "gender": "M"}, {"no": "15", "class": "4A", "id": "03", "name": "周駿軒", "gender": "M"}, {"no": "16", "class": "4A", "id": "10", "name": "羅凱澄", "gender": "F"}, {"no": "17", "class": "4A", "id": "12", "name": "梁諾霖", "gender": "F"}, {"no": "18", "class": "4A", "id": "14", "name": "陸佇倫", "gender": "M"}, {"no": "19", "class": "4A", "id": "17", "name": "吳俊賢", "gender": "M"}, {"no": "20", "class": "4A", "id": "18", "name": "伍思允", "gender": "F"}, {"no": "21", "class": "4A", "id": "19", "name": "施欣榆", "gender": "F"}, {"no": "22", "class": "4A", "id": "20", "name": "王宇澄", "gender": "F"}, {"no": "23", "class": "4A", "id": "22", "name": "吳梓睿", "gender": "M"}, {"no": "24", "class": "4A", "id": "24", "name": "丘苡程", "gender": "F"}, {"no": "25", "class": "4A", "id": "25", "name": "章嘉恆", "gender": "M"}, {"no": "26", "class": "4B", "id": "01", "name": "陳睿彤", "gender": "F"}, {"no": "27", "class": "4B", "id": "03", "name": "趙子博", "gender": "M"}, {"no": "28", "class": "4B", "id": "07", "name": "賴蕙寧", "gender": "F"}, {"no": "29", "class": "4B", "id": "08", "name": "林寧楓", "gender": "M"}, {"no": "30", "class": "4B", "id": "11", "name": "李祉昕", "gender": "F"}, {"no": "31", "class": "4B", "id": "12", "name": "梁思雨", "gender": "F"}, {"no": "32", "class": "4B", "id": "15", "name": "毛詩喬", "gender": "F"}, {"no": "33", "class": "4B", "id": "16", "name": "莫子瑜", "gender": "F"}, {"no": "34", "class": "4B", "id": "17", "name": "莫沂致", "gender": "M"}, {"no": "35", "class": "4B", "id": "18", "name": "顏仲晞", "gender": "M"}, {"no": "36", "class": "4B", "id": "22", "name": "鄭培琳", "gender": "F"}, {"no": "37", "class": "4C", "id": "05", "name": "KHAN SANAYA", "gender": "F"}, {"no": "38", "class": "4C", "id": "06", "name": "鄺穎琪", "gender": "F"}, {"no": "39", "class": "4C", "id": "16", "name": "吳芯兒", "gender": "F"}, {"no": "40", "class": "4C", "id": "19", "name": "吴佳祐", "gender": "M"}], "M003": [{"no": "1", "class": "4A", "id": "12", "name": "梁諾霖", "gender": "F"}, {"no": "2", "class": "6B", "id": "07", "name": "何芷凝", "gender": "F"}, {"no": "3", "class": "6C", "id": "19", "name": "巫倩滿", "gender": "F"}, {"no": "4", "class": "6C", "id": "16", "name": "曾允妍", "gender": "F"}, {"no": "5", "class": "4B", "id": "14", "name": "李柏熹", "gender": "M"}, {"no": "6", "class": "4A", "id": "18", "name": "伍思允", "gender": "F"}, {"no": "7", "class": "4B", "id": "16", "name": "莫子瑜", "gender": "F"}], "A001": [{"no": "1", "class": "2A", "id": "03", "name": "周倬熙", "gender": "M"}, {"no": "2", "class": "2A", "id": "05", "name": "馮峻銘", "gender": "M"}, {"no": "3", "class": "2A", "id": "07", "name": "古嫻欣", "gender": "F"}, {"no": "4", "class": "2A", "id": "12", "name": "凌晨悦", "gender": "F"}, {"no": "5", "class": "3A", "id": "20", "name": "謝穎妍", "gender": "F"}, {"no": "6", "class": "3B", "id": "16", "name": "王韻澄", "gender": "F"}, {"no": "7", "class": "4C", "id": "20", "name": "易曉彤", "gender": "F"}, {"no": "8", "class": "5A", "id": "05", "name": "周紫悅", "gender": "F"}, {"no": "9", "class": "5A", "id": "06", "name": "徐茵琪", "gender": "F"}, {"no": "10", "class": "5A", "id": "25", "name": "姚皓朗", "gender": "M"}, {"no": "11", "class": "5A", "id": "24", "name": "邱美林", "gender": "F"}, {"no": "12", "class": "5D", "id": "17", "name": "李蕊琪", "gender": "F"}, {"no": "13", "class": "5D", "id": "19", "name": "劉柏妍", "gender": "F"}, {"no": "14", "class": "6A", "id": "03", "name": "陳藴馨", "gender": "F"}, {"no": "15", "class": "6A", "id": "15", "name": "勞子瑜", "gender": "F"}, {"no": "16", "class": "6C", "id": "09", "name": "龔沛豪", "gender": "M"}, {"no": "17", "class": "6D", "id": "10", "name": "林幸妍", "gender": "F"}, {"no": "18", "class": "6D", "id": "20", "name": "孫芊愛", "gender": "F"}, {"no": "19", "class": "3B", "id": "18", "name": "楊語馨", "gender": "F"}, {"no": "20", "class": "4C", "id": "08", "name": "林君叡", "gender": "M"}], "ST001": [{"no": "1", "class": "5A", "id": "13", "name": "馬業超", "gender": "M"}, {"no": "2", "class": "5A", "id": "15", "name": "顏子淳", "gender": "M"}, {"no": "3", "class": "5A", "id": "16", "name": "顏子淮", "gender": "M"}, {"no": "4", "class": "5A", "id": "20", "name": "黃寶姸", "gender": "F"}, {"no": "5", "class": "5A", "id": "22", "name": "黃弘順", "gender": "M"}, {"no": "6", "class": "5A", "id": "02", "name": "陳梓謙", "gender": "M"}, {"no": "7", "class": "6A", "id": "24", "name": "黃愷瑨", "gender": "M"}, {"no": "8", "class": "6A", "id": "06", "name": "張振暉", "gender": "M"}, {"no": "9", "class": "6B", "id": "15", "name": "林子杰", "gender": "M"}, {"no": "10", "class": "6A", "id": "07", "name": "蔡梓天", "gender": "M"}, {"no": "11", "class": "6A", "id": "08", "name": "樊家熙", "gender": "M"}, {"no": "12", "class": "6A", "id": "14", "name": "廖安澄", "gender": "M"}, {"no": "13", "class": "6B", "id": "20", "name": "葉潤林", "gender": "M"}, {"no": "14", "class": "4A", "id": "11", "name": "梁灝程", "gender": "M"}], "M004": [{"no": "1", "class": "3B", "id": "05", "name": "陳以諾", "gender": "M"}, {"no": "2", "class": "5A", "id": "13", "name": "馬業超", "gender": "M"}, {"no": "3", "class": "4A", "id": "25", "name": "章嘉恆", "gender": "M"}, {"no": "4", "class": "6A", "id": "19", "name": "謝采宜", "gender": "F"}, {"no": "5", "class": "6A", "id": "02", "name": "陳奕竣", "gender": "M"}, {"no": "6", "class": "6A", "id": "04", "name": "陳以琳", "gender": "F"}, {"no": "7", "class": "6A", "id": "07", "name": "蔡梓天", "gender": "M"}, {"no": "8", "class": "6A", "id": "13", "name": "李誠熙", "gender": "M"}, {"no": "9", "class": "6C", "id": "10", "name": "賴曉瑜", "gender": "F"}, {"no": "10", "class": "6C", "id": "11", "name": "賴舜謙", "gender": "M"}, {"no": "11", "class": "4A", "id": "01", "name": "陳奕皓", "gender": "M"}, {"no": "12", "class": "4A", "id": "11", "name": "梁灝程", "gender": "M"}, {"no": "13", "class": "4B", "id": "15", "name": "毛詩喬", "gender": "F"}], "A002": [{"no": "1", "class": "3B", "id": "11", "name": "吳昕淇", "gender": "F"}, {"no": "2", "class": "3B", "id": "16", "name": "王韻澄", "gender": "F"}, {"no": "3", "class": "3B", "id": "18", "name": "楊語馨", "gender": "F"}, {"no": "4", "class": "5A", "id": "14", "name": "伍思蔚", "gender": "F"}, {"no": "5", "class": "5A", "id": "18", "name": "蘇諾妍", "gender": "F"}, {"no": "6", "class": "5A", "id": "22", "name": "黃弘順", "gender": "M"}, {"no": "7", "class": "5A", "id": "24", "name": "邱美林", "gender": "F"}, {"no": "8", "class": "5B", "id": "01", "name": "陳樂妍", "gender": "F"}, {"no": "9", "class": "5B", "id": "04", "name": "鍾慧琪", "gender": "F"}, {"no": "10", "class": "5B", "id": "05", "name": "鍾慧瑤", "gender": "F"}, {"no": "11", "class": "5C", "id": "02", "name": "陳佩欣", "gender": "F"}, {"no": "12", "class": "5C", "id": "12", "name": "吳書羽", "gender": "F"}, {"no": "13", "class": "5D", "id": "19", "name": "劉柏妍", "gender": "F"}, {"no": "14", "class": "5D", "id": "05", "name": "陳雅婷", "gender": "F"}, {"no": "15", "class": "6B", "id": "16", "name": "吳梓君", "gender": "F"}, {"no": "16", "class": "6B", "id": "18", "name": "孫蕾", "gender": "F"}, {"no": "17", "class": "6B", "id": "22", "name": "鄭佩珊", "gender": "F"}, {"no": "18", "class": "6C", "id": "01", "name": "陳煜敏", "gender": "F"}, {"no": "19", "class": "6C", "id": "20", "name": "吴彥霖", "gender": "F"}, {"no": "20", "class": "5A", "id": "27", "name": "鄭培莹", "gender": "F"}, {"no": "21", "class": "5B", "id": "11", "name": "廖安喜", "gender": "F"}, {"no": "22", "class": "6B", "id": "10", "name": "劉靖晞", "gender": "F"}, {"no": "23", "class": "5A", "id": "01", "name": "陳梓澄", "gender": "F"}], "P001": [{"no": "1", "class": "4C", "id": "11", "name": "林瑞瀅", "gender": "F"}, {"no": "2", "class": "5A", "id": "07", "name": "馮峻麒", "gender": "M"}, {"no": "3", "class": "5C", "id": "10", "name": "李芯甜", "gender": "F"}, {"no": "4", "class": "5C", "id": "18", "name": "夏浩楠", "gender": "M"}, {"no": "5", "class": "5C", "id": "19", "name": "楊雨澄", "gender": "F"}, {"no": "6", "class": "6A", "id": "02", "name": "陳奕竣", "gender": "M"}, {"no": "7", "class": "6B", "id": "20", "name": "葉潤林", "gender": "M"}, {"no": "8", "class": "5A", "id": "13", "name": "馬業超", "gender": "M"}, {"no": "9", "class": "6A", "id": "11", "name": "林靜昕", "gender": "F"}, {"no": "10", "class": "5C", "id": "05", "name": "張子鐸", "gender": "M"}, {"no": "11", "class": "5C", "id": "11", "name": "吳致謙", "gender": "M"}], "P003": [{"no": "1", "class": "3A", "id": "15", "name": "魏希佑", "gender": "M"}, {"no": "2", "class": "6A", "id": "17", "name": "魏希雅", "gender": "F"}, {"no": "3", "class": "6C", "id": "23", "name": "楊淮智", "gender": "M"}, {"no": "4", "class": "6A", "id": "11", "name": "林靜昕", "gender": "F"}, {"no": "5", "class": "6D", "id": "11", "name": "林梓謙", "gender": "M"}, {"no": "6", "class": "4C", "id": "17", "name": "彭景麟", "gender": "M"}, {"no": "7", "class": "6A", "id": "21", "name": "王焯軒", "gender": "M"}, {"no": "8", "class": "6A", "id": "22", "name": "黃駿霖", "gender": "M"}, {"no": "9", "class": "6A", "id": "27", "name": "曾維琸", "gender": "M"}, {"no": "10", "class": "4C", "id": "02", "name": "陳浩宇", "gender": "M"}, {"no": "11", "class": "5A", "id": "09", "name": "江文軒", "gender": "M"}, {"no": "12", "class": "5A", "id": "17", "name": "NWAJIUGO JIDENNA DALIAN", "gender": "M"}], "P004": [{"no": "1", "class": "2A", "id": "12", "name": "凌晨悦", "gender": "F"}, {"no": "2", "class": "3A", "id": "06", "name": "何禹明", "gender": "F"}, {"no": "3", "class": "4A", "id": "18", "name": "伍思允", "gender": "F"}, {"no": "4", "class": "4A", "id": "25", "name": "章嘉恆", "gender": "M"}, {"no": "5", "class": "4A", "id": "07", "name": "馮昊霆", "gender": "M"}, {"no": "6", "class": "4B", "id": "15", "name": "毛詩喬", "gender": "F"}, {"no": "7", "class": "4C", "id": "06", "name": "鄺穎琪", "gender": "F"}, {"no": "8", "class": "4C", "id": "09", "name": "劉諾伊", "gender": "F"}, {"no": "9", "class": "4C", "id": "15", "name": "羅梓杰", "gender": "M"}, {"no": "10", "class": "5B", "id": "21", "name": "黃敏瑜", "gender": "F"}, {"no": "11", "class": "5C", "id": "10", "name": "李芯甜", "gender": "F"}, {"no": "12", "class": "5C", "id": "06", "name": "蔡欣澄", "gender": "F"}, {"no": "13", "class": "5D", "id": "13", "name": "黎衍佑", "gender": "M"}, {"no": "14", "class": "5D", "id": "05", "name": "陳雅婷", "gender": "F"}, {"no": "15", "class": "5D", "id": "22", "name": "楊嘉怡", "gender": "F"}, {"no": "16", "class": "6D", "id": "07", "name": "許弘鏸", "gender": "F"}, {"no": "17", "class": "4A", "id": "02", "name": "陳韋銘", "gender": "M"}, {"no": "18", "class": "6B", "id": "19", "name": "黃芯瑜", "gender": "F"}, {"no": "19", "class": "2A", "id": "07", "name": "古嫻欣", "gender": "F"}, {"no": "20", "class": "3A", "id": "19", "name": "曾御", "gender": "M"}, {"no": "21", "class": "5C", "id": "12", "name": "吳書羽", "gender": "F"}, {"no": "22", "class": "5A", "id": "18", "name": "蘇諾妍", "gender": "F"}], "P005": [], "ASCP001": [], "ASCP002": [], "ASCP003": [], "ASCP004": [], "ASCP005": [], "G384": [{"no": "1", "class": "4C", "id": "01", "name": "陳栢曦", "gender": "M"}, {"no": "2", "class": "4A", "id": "06", "name": "朱愷桐", "gender": "F"}, {"no": "3", "class": "4B", "id": "12", "name": "梁思雨", "gender": "F"}, {"no": "4", "class": "5A", "id": "05", "name": "周紫悅", "gender": "F"}, {"no": "5", "class": "5A", "id": "02", "name": "陳梓謙", "gender": "M"}, {"no": "6", "class": "5A", "id": "25", "name": "姚皓朗", "gender": "M"}, {"no": "7", "class": "5A", "id": "13", "name": "馬業超", "gender": "M"}, {"no": "8", "class": "5A", "id": "07", "name": "馮峻麒", "gender": "M"}, {"no": "9", "class": "5D", "id": "15", "name": "劉星宇", "gender": "M"}, {"no": "10", "class": "6A", "id": "21", "name": "王焯軒", "gender": "M"}, {"no": "11", "class": "6A", "id": "27", "name": "曾維琸", "gender": "M"}, {"no": "12", "class": "6A", "id": "08", "name": "樊家熙", "gender": "M"}, {"no": "13", "class": "6A", "id": "24", "name": "黃愷瑨", "gender": "M"}, {"no": "14", "class": "6D", "id": "04", "name": "陳智鵬", "gender": "M"}, {"no": "15", "class": "6C", "id": "23", "name": "楊淮智", "gender": "M"}, {"no": "16", "class": "5A", "id": "17", "name": "NWAJIUGO JIDENNA DALIAN", "gender": "M"}, {"no": "17", "class": "6A", "id": "03", "name": "陳藴馨", "gender": "F"}, {"no": "18", "class": "6A", "id": "20", "name": "謝善童", "gender": "F"}], "M002B": [], "M002A": [{"no": "1", "class": "3B", "id": "16", "name": "王韻澄", "gender": "F"}, {"no": "2", "class": "4B", "id": "09", "name": "劉宇瑩", "gender": "F"}, {"no": "3", "class": "4C", "id": "10", "name": "梁雅晴", "gender": "F"}, {"no": "4", "class": "5B", "id": "18", "name": "曹香凝", "gender": "F"}, {"no": "5", "class": "5C", "id": "07", "name": "何汶知", "gender": "F"}, {"no": "6", "class": "5C", "id": "10", "name": "李芯甜", "gender": "F"}, {"no": "7", "class": "6C", "id": "11", "name": "賴舜謙", "gender": "M"}, {"no": "8", "class": "6C", "id": "21", "name": "許天聰", "gender": "M"}, {"no": "9", "class": "6C", "id": "16", "name": "曾允妍", "gender": "F"}, {"no": "10", "class": "5D", "id": "12", "name": "季詩詩", "gender": "F"}], "P002A": [{"no": "1", "class": "3A", "id": "15", "name": "魏希佑", "gender": "M"}, {"no": "2", "class": "3B", "id": "05", "name": "陳以諾", "gender": "M"}, {"no": "3", "class": "3B", "id": "08", "name": "黃鈺涵", "gender": "F"}, {"no": "4", "class": "3A", "id": "06", "name": "何禹明", "gender": "F"}, {"no": "5", "class": "4A", "id": "01", "name": "陳奕皓", "gender": "M"}, {"no": "6", "class": "4A", "id": "08", "name": "黎力暢", "gender": "M"}, {"no": "7", "class": "4A", "id": "10", "name": "羅凱澄", "gender": "F"}, {"no": "8", "class": "4B", "id": "03", "name": "趙子博", "gender": "M"}, {"no": "9", "class": "4B", "id": "14", "name": "李柏熹", "gender": "M"}, {"no": "10", "class": "4B", "id": "22", "name": "鄭培琳", "gender": "F"}, {"no": "11", "class": "4C", "id": "02", "name": "陳浩宇", "gender": "M"}, {"no": "12", "class": "5A", "id": "17", "name": "NWAJIUGO JIDENNA DALIAN", "gender": "M"}, {"no": "13", "class": "5A", "id": "27", "name": "鄭培莹", "gender": "F"}, {"no": "14", "class": "5B", "id": "13", "name": "呂秉軒", "gender": "M"}, {"no": "15", "class": "5C", "id": "10", "name": "李芯甜", "gender": "F"}, {"no": "16", "class": "5C", "id": "18", "name": "夏浩楠", "gender": "M"}, {"no": "17", "class": "5C", "id": "21", "name": "鍾睿豪", "gender": "M"}, {"no": "18", "class": "6A", "id": "02", "name": "陳奕竣", "gender": "M"}, {"no": "19", "class": "6A", "id": "11", "name": "林靜昕", "gender": "F"}, {"no": "20", "class": "6A", "id": "22", "name": "黃駿霖", "gender": "M"}, {"no": "21", "class": "6B", "id": "01", "name": "陳凱平", "gender": "M"}, {"no": "22", "class": "6B", "id": "05", "name": "趙梓彤", "gender": "F"}, {"no": "23", "class": "6C", "id": "12", "name": "林恩霈", "gender": "F"}, {"no": "24", "class": "6D", "id": "11", "name": "林梓謙", "gender": "M"}, {"no": "25", "class": "3A", "id": "01", "name": "陳芷萱", "gender": "F"}, {"no": "26", "class": "4C", "id": "09", "name": "劉諾伊", "gender": "F"}, {"no": "27", "class": "5D", "id": "03", "name": "周宏進", "gender": "M"}, {"no": "28", "class": "6A", "id": "17", "name": "魏希雅", "gender": "F"}], "G444": [{"no": "1", "class": "2A", "id": "13", "name": "毛詩玥", "gender": "F"}, {"no": "2", "class": "3A", "id": "02", "name": "陳梓俊", "gender": "M"}, {"no": "3", "class": "3A", "id": "07", "name": "古偉明", "gender": "M"}, {"no": "4", "class": "3A", "id": "09", "name": "林芷晴", "gender": "F"}, {"no": "5", "class": "4A", "id": "21", "name": "吳依怡", "gender": "F"}, {"no": "6", "class": "4B", "id": "02", "name": "陳世傑", "gender": "M"}, {"no": "7", "class": "4B", "id": "18", "name": "顏仲晞", "gender": "M"}, {"no": "8", "class": "6A", "id": "10", "name": "蔣心怡", "gender": "F"}, {"no": "9", "class": "6B", "id": "04", "name": "陳紫欣", "gender": "F"}, {"no": "10", "class": "6C", "id": "18", "name": "胡珈瑋", "gender": "F"}, {"no": "11", "class": "6C", "id": "02", "name": "陳庭欣", "gender": "F"}, {"no": "12", "class": "6D", "id": "18", "name": "顏仲懃", "gender": "M"}, {"no": "13", "class": "4B", "id": "16", "name": "莫子瑜", "gender": "F"}], "P002B": [{"no": "1", "class": "3A", "id": "15", "name": "魏希佑", "gender": "M"}, {"no": "2", "class": "3A", "id": "06", "name": "何禹明", "gender": "F"}, {"no": "3", "class": "3B", "id": "05", "name": "陳以諾", "gender": "M"}, {"no": "4", "class": "3B", "id": "08", "name": "黃鈺涵", "gender": "F"}, {"no": "5", "class": "4A", "id": "08", "name": "黎力暢", "gender": "M"}, {"no": "6", "class": "4A", "id": "10", "name": "羅凱澄", "gender": "F"}, {"no": "7", "class": "4A", "id": "01", "name": "陳奕皓", "gender": "M"}, {"no": "8", "class": "4B", "id": "03", "name": "趙子博", "gender": "M"}, {"no": "9", "class": "4B", "id": "14", "name": "李柏熹", "gender": "M"}, {"no": "10", "class": "4B", "id": "22", "name": "鄭培琳", "gender": "F"}, {"no": "11", "class": "4C", "id": "02", "name": "陳浩宇", "gender": "M"}, {"no": "12", "class": "4C", "id": "09", "name": "劉諾伊", "gender": "F"}, {"no": "13", "class": "5A", "id": "17", "name": "NWAJIUGO JIDENNA DALIAN", "gender": "M"}, {"no": "14", "class": "5A", "id": "27", "name": "鄭培莹", "gender": "F"}, {"no": "15", "class": "5B", "id": "13", "name": "呂秉軒", "gender": "M"}, {"no": "16", "class": "5C", "id": "10", "name": "李芯甜", "gender": "F"}, {"no": "17", "class": "5C", "id": "18", "name": "夏浩楠", "gender": "M"}, {"no": "18", "class": "5C", "id": "21", "name": "鍾睿豪", "gender": "M"}, {"no": "19", "class": "5D", "id": "03", "name": "周宏進", "gender": "M"}, {"no": "20", "class": "6A", "id": "02", "name": "陳奕竣", "gender": "M"}, {"no": "21", "class": "6A", "id": "11", "name": "林靜昕", "gender": "F"}, {"no": "22", "class": "6A", "id": "17", "name": "魏希雅", "gender": "F"}, {"no": "23", "class": "6A", "id": "22", "name": "黃駿霖", "gender": "M"}, {"no": "24", "class": "6B", "id": "01", "name": "陳凱平", "gender": "M"}, {"no": "25", "class": "6B", "id": "05", "name": "趙梓彤", "gender": "F"}, {"no": "26", "class": "6C", "id": "12", "name": "林恩霈", "gender": "F"}, {"no": "27", "class": "6D", "id": "11", "name": "林梓謙", "gender": "M"}, {"no": "28", "class": "3A", "id": "01", "name": "陳芷萱", "gender": "F"}], "G618": [], "G970": [{"no": "1", "class": "3B", "id": "05", "name": "陳以諾", "gender": "M"}, {"no": "2", "class": "5C", "id": "10", "name": "李芯甜", "gender": "F"}, {"no": "3", "class": "5D", "id": "03", "name": "周宏進", "gender": "M"}, {"no": "4", "class": "5B", "id": "13", "name": "呂秉軒", "gender": "M"}, {"no": "5", "class": "6B", "id": "05", "name": "趙梓彤", "gender": "F"}, {"no": "6", "class": "6B", "id": "14", "name": "林子城", "gender": "M"}, {"no": "7", "class": "6B", "id": "15", "name": "林子杰", "gender": "M"}, {"no": "8", "class": "5A", "id": "17", "name": "NWAJIUGO JIDENNA DALIAN", "gender": "M"}, {"no": "9", "class": "5A", "id": "21", "name": "黃子涵", "gender": "F"}, {"no": "10", "class": "5C", "id": "08", "name": "洪珞", "gender": "M"}, {"no": "11", "class": "4B", "id": "02", "name": "陳世傑", "gender": "M"}, {"no": "12", "class": "6C", "id": "04", "name": "朱衍諾", "gender": "M"}, {"no": "13", "class": "5D", "id": "21", "name": "麥文浩", "gender": "M"}, {"no": "14", "class": "5C", "id": "12", "name": "吳書羽", "gender": "F"}, {"no": "15", "class": "5D", "id": "22", "name": "楊嘉怡", "gender": "F"}], "G247": [], "G340": [], "G539": [], "G775": [], "G649": [], "G412": [], "G445": [{"no": "1", "class": "5A", "id": "17", "name": "NWAJIUGO JIDENNA DALIAN", "gender": "M"}, {"no": "2", "class": "5B", "id": "13", "name": "呂秉軒", "gender": "M"}, {"no": "3", "class": "5C", "id": "18", "name": "夏浩楠", "gender": "M"}, {"no": "4", "class": "5C", "id": "21", "name": "鍾睿豪", "gender": "M"}, {"no": "5", "class": "6A", "id": "02", "name": "陳奕竣", "gender": "M"}, {"no": "6", "class": "6A", "id": "16", "name": "吳皓銘", "gender": "M"}, {"no": "7", "class": "6B", "id": "14", "name": "林子城", "gender": "M"}, {"no": "8", "class": "6B", "id": "15", "name": "林子杰", "gender": "M"}, {"no": "9", "class": "6C", "id": "23", "name": "楊淮智", "gender": "M"}, {"no": "10", "class": "5B", "id": "19", "name": "魏熙靖", "gender": "M"}, {"no": "11", "class": "6D", "id": "11", "name": "林梓謙", "gender": "M"}, {"no": "12", "class": "5B", "id": "08", "name": "何榮貴", "gender": "M"}], "G867": [{"no": "1", "class": "2A", "id": "13", "name": "毛詩玥", "gender": "F"}, {"no": "2", "class": "3A", "id": "04", "name": "徐嘉悠", "gender": "F"}, {"no": "3", "class": "4A", "id": "15", "name": "馬迪芊", "gender": "F"}, {"no": "4", "class": "4B", "id": "07", "name": "賴蕙寧", "gender": "F"}, {"no": "5", "class": "4B", "id": "11", "name": "李祉昕", "gender": "F"}, {"no": "6", "class": "5A", "id": "01", "name": "陳梓澄", "gender": "F"}, {"no": "7", "class": "5A", "id": "03", "name": "陳凱琳", "gender": "F"}, {"no": "8", "class": "5A", "id": "11", "name": "梁諾澄", "gender": "F"}, {"no": "9", "class": "5A", "id": "14", "name": "伍思蔚", "gender": "F"}, {"no": "10", "class": "5A", "id": "20", "name": "黃寶姸", "gender": "F"}, {"no": "11", "class": "6B", "id": "18", "name": "孫蕾", "gender": "F"}, {"no": "12", "class": "6B", "id": "19", "name": "黃芯瑜", "gender": "F"}, {"no": "13", "class": "6C", "id": "07", "name": "何芷藍", "gender": "F"}, {"no": "14", "class": "6C", "id": "08", "name": "何穎喬", "gender": "F"}], "G750": [], "S014A": [{"no": "1", "class": "4B", "id": "09", "name": "劉宇瑩", "gender": "F"}, {"no": "2", "class": "4B", "id": "13", "name": "李晉宇", "gender": "M"}, {"no": "3", "class": "4B", "id": "19", "name": "鄧茵予", "gender": "F"}, {"no": "4", "class": "4B", "id": "20", "name": "黃鎧瑩", "gender": "F"}, {"no": "5", "class": "4C", "id": "03", "name": "蔡梓維", "gender": "M"}, {"no": "6", "class": "4C", "id": "06", "name": "鄺穎琪", "gender": "F"}, {"no": "7", "class": "4C", "id": "10", "name": "梁雅晴", "gender": "F"}, {"no": "8", "class": "4C", "id": "08", "name": "林君叡", "gender": "M"}, {"no": "9", "class": "4C", "id": "14", "name": "盧岱生", "gender": "M"}, {"no": "10", "class": "4C", "id": "07", "name": "林文雅", "gender": "F"}], "S015A": [{"no": "1", "class": "5A", "id": "02", "name": "陳梓謙", "gender": "M"}, {"no": "2", "class": "5B", "id": "17", "name": "曾熙", "gender": "M"}, {"no": "3", "class": "5B", "id": "21", "name": "黃敏瑜", "gender": "F"}, {"no": "4", "class": "5C", "id": "07", "name": "何汶知", "gender": "F"}, {"no": "5", "class": "5C", "id": "15", "name": "司徒嘉銘", "gender": "M"}, {"no": "6", "class": "5D", "id": "01", "name": "陳洛羲", "gender": "M"}, {"no": "7", "class": "5D", "id": "15", "name": "劉星宇", "gender": "M"}], "S003A": [{"no": "1", "class": "2A", "id": "02", "name": "張禮皓", "gender": "M"}, {"no": "2", "class": "2A", "id": "04", "name": "周煒傑", "gender": "M"}, {"no": "3", "class": "2A", "id": "08", "name": "關名晉", "gender": "M"}, {"no": "4", "class": "3A", "id": "02", "name": "陳梓俊", "gender": "M"}, {"no": "5", "class": "3A", "id": "05", "name": "樊家睿", "gender": "M"}, {"no": "6", "class": "3B", "id": "06", "name": "周博進", "gender": "M"}], "S003B": [{"no": "1", "class": "4C", "id": "20", "name": "易曉彤", "gender": "F"}, {"no": "2", "class": "4C", "id": "12", "name": "廖栢賢", "gender": "M"}, {"no": "3", "class": "5B", "id": "02", "name": "張政皜", "gender": "M"}, {"no": "4", "class": "5B", "id": "07", "name": "馮駿熹", "gender": "M"}, {"no": "5", "class": "6A", "id": "05", "name": "陳舜榮", "gender": "M"}, {"no": "6", "class": "6C", "id": "21", "name": "許天聰", "gender": "M"}], "G731": [{"no": "1", "class": "4A", "id": "01", "name": "陳奕皓", "gender": "M"}, {"no": "2", "class": "4A", "id": "07", "name": "馮昊霆", "gender": "M"}, {"no": "3", "class": "4A", "id": "20", "name": "王宇澄", "gender": "F"}, {"no": "4", "class": "4A", "id": "03", "name": "周駿軒", "gender": "M"}, {"no": "5", "class": "4A", "id": "23", "name": "邱柏旗", "gender": "M"}, {"no": "6", "class": "4A", "id": "06", "name": "朱愷桐", "gender": "F"}, {"no": "7", "class": "4A", "id": "09", "name": "黎子樂", "gender": "M"}, {"no": "8", "class": "4B", "id": "04", "name": "馮駿軒", "gender": "M"}, {"no": "9", "class": "4B", "id": "13", "name": "李晉宇", "gender": "M"}, {"no": "10", "class": "4B", "id": "22", "name": "鄭培琳", "gender": "F"}, {"no": "11", "class": "4B", "id": "02", "name": "陳世傑", "gender": "M"}, {"no": "12", "class": "4B", "id": "10", "name": "李卓謙", "gender": "M"}, {"no": "13", "class": "4B", "id": "12", "name": "梁思雨", "gender": "F"}, {"no": "14", "class": "4B", "id": "17", "name": "莫沂致", "gender": "M"}, {"no": "15", "class": "4B", "id": "20", "name": "黃鎧瑩", "gender": "F"}, {"no": "16", "class": "4B", "id": "21", "name": "余迦霖", "gender": "M"}, {"no": "17", "class": "4B", "id": "06", "name": "黎力瑞", "gender": "M"}, {"no": "18", "class": "4B", "id": "08", "name": "林寧楓", "gender": "M"}, {"no": "19", "class": "4B", "id": "19", "name": "鄧茵予", "gender": "F"}, {"no": "20", "class": "4C", "id": "01", "name": "陳栢曦", "gender": "M"}, {"no": "21", "class": "4C", "id": "04", "name": "黃家朗", "gender": "M"}, {"no": "22", "class": "4C", "id": "11", "name": "林瑞瀅", "gender": "F"}, {"no": "23", "class": "4C", "id": "18", "name": "唐景皓", "gender": "M"}, {"no": "24", "class": "4C", "id": "19", "name": "吴佳祐", "gender": "M"}, {"no": "25", "class": "4C", "id": "09", "name": "劉諾伊", "gender": "F"}, {"no": "26", "class": "4C", "id": "10", "name": "梁雅晴", "gender": "F"}, {"no": "27", "class": "4C", "id": "15", "name": "羅梓杰", "gender": "M"}, {"no": "28", "class": "4C", "id": "16", "name": "吳芯兒", "gender": "F"}, {"no": "29", "class": "4C", "id": "07", "name": "林文雅", "gender": "F"}, {"no": "30", "class": "4C", "id": "20", "name": "易曉彤", "gender": "F"}, {"no": "31", "class": "4C", "id": "08", "name": "林君叡", "gender": "M"}], "G812": [{"no": "1", "class": "5A", "id": "23", "name": "丘敏澄", "gender": "F"}, {"no": "2", "class": "5B", "id": "02", "name": "張政皜", "gender": "M"}, {"no": "3", "class": "5B", "id": "03", "name": "張進逸", "gender": "M"}, {"no": "4", "class": "5B", "id": "07", "name": "馮駿熹", "gender": "M"}, {"no": "5", "class": "5B", "id": "14", "name": "馬希雅", "gender": "F"}, {"no": "6", "class": "5B", "id": "20", "name": "黃朗陽", "gender": "M"}, {"no": "7", "class": "5B", "id": "21", "name": "黃敏瑜", "gender": "F"}, {"no": "8", "class": "5C", "id": "13", "name": "施峻銘", "gender": "M"}, {"no": "9", "class": "5C", "id": "14", "name": "SINGH AGAMJOT", "gender": "M"}, {"no": "10", "class": "5C", "id": "15", "name": "司徒嘉銘", "gender": "M"}, {"no": "11", "class": "5C", "id": "20", "name": "曾敏葰", "gender": "M"}, {"no": "12", "class": "5C", "id": "21", "name": "鍾睿豪", "gender": "M"}, {"no": "13", "class": "5D", "id": "01", "name": "陳洛羲", "gender": "M"}, {"no": "14", "class": "5D", "id": "09", "name": "張栢言", "gender": "M"}, {"no": "15", "class": "5D", "id": "10", "name": "郭宇陽", "gender": "M"}, {"no": "16", "class": "5D", "id": "13", "name": "黎衍佑", "gender": "M"}], "G767": [{"no": "1", "class": "6A", "id": "02", "name": "陳奕竣", "gender": "M"}, {"no": "2", "class": "6A", "id": "25", "name": "吳元煜", "gender": "M"}, {"no": "3", "class": "6B", "id": "01", "name": "陳凱平", "gender": "M"}, {"no": "4", "class": "6B", "id": "02", "name": "陳銘", "gender": "M"}, {"no": "5", "class": "6B", "id": "08", "name": "黃政瑋", "gender": "M"}, {"no": "6", "class": "6B", "id": "19", "name": "黃芯瑜", "gender": "F"}, {"no": "7", "class": "6C", "id": "02", "name": "陳庭欣", "gender": "F"}, {"no": "8", "class": "6C", "id": "03", "name": "蔡天樂", "gender": "M"}, {"no": "9", "class": "6C", "id": "15", "name": "史鎧瑋", "gender": "M"}, {"no": "10", "class": "6C", "id": "17", "name": "黃志宏", "gender": "M"}, {"no": "11", "class": "6C", "id": "18", "name": "胡珈瑋", "gender": "F"}, {"no": "12", "class": "6C", "id": "20", "name": "吴彥霖", "gender": "F"}, {"no": "13", "class": "6D", "id": "10", "name": "林幸妍", "gender": "F"}, {"no": "14", "class": "6D", "id": "12", "name": "林梓琦", "gender": "F"}], "G419": [], "S012": [{"no": "1", "class": "2A", "id": "01", "name": "陳曉瑩", "gender": "F"}, {"no": "2", "class": "2A", "id": "02", "name": "張禮皓", "gender": "M"}, {"no": "3", "class": "2A", "id": "03", "name": "周倬熙", "gender": "M"}, {"no": "4", "class": "2A", "id": "06", "name": "簡沛燊", "gender": "M"}, {"no": "5", "class": "2A", "id": "08", "name": "關名晉", "gender": "M"}, {"no": "6", "class": "2A", "id": "09", "name": "林曦雪", "gender": "F"}, {"no": "7", "class": "2A", "id": "15", "name": "黃曉晴", "gender": "F"}, {"no": "8", "class": "2A", "id": "04", "name": "周煒傑", "gender": "M"}], "S013": [{"no": "1", "class": "3A", "id": "08", "name": "林寧生", "gender": "M"}, {"no": "2", "class": "3A", "id": "09", "name": "林芷晴", "gender": "F"}, {"no": "3", "class": "3A", "id": "16", "name": "潘俊瑋", "gender": "M"}, {"no": "4", "class": "3A", "id": "19", "name": "曾御", "gender": "M"}, {"no": "5", "class": "3B", "id": "04", "name": "陳嘉晴", "gender": "F"}, {"no": "6", "class": "3B", "id": "07", "name": "馮椲澤", "gender": "M"}, {"no": "7", "class": "3B", "id": "08", "name": "黃鈺涵", "gender": "F"}], "S014B": [{"no": "1", "class": "4B", "id": "11", "name": "李祉昕", "gender": "F"}, {"no": "2", "class": "4B", "id": "03", "name": "趙子博", "gender": "M"}, {"no": "3", "class": "4B", "id": "06", "name": "黎力瑞", "gender": "M"}, {"no": "4", "class": "4B", "id": "08", "name": "林寧楓", "gender": "M"}, {"no": "5", "class": "4C", "id": "01", "name": "陳栢曦", "gender": "M"}, {"no": "6", "class": "4C", "id": "04", "name": "黃家朗", "gender": "M"}, {"no": "7", "class": "4C", "id": "11", "name": "林瑞瀅", "gender": "F"}, {"no": "8", "class": "4C", "id": "12", "name": "廖栢賢", "gender": "M"}, {"no": "9", "class": "4C", "id": "20", "name": "易曉彤", "gender": "F"}, {"no": "10", "class": "4C", "id": "09", "name": "劉諾伊", "gender": "F"}], "S015B": [{"no": "1", "class": "5A", "id": "21", "name": "黃子涵", "gender": "F"}, {"no": "2", "class": "5B", "id": "18", "name": "曹香凝", "gender": "F"}, {"no": "3", "class": "5B", "id": "07", "name": "馮駿熹", "gender": "M"}, {"no": "4", "class": "5B", "id": "03", "name": "張進逸", "gender": "M"}, {"no": "5", "class": "5C", "id": "05", "name": "張子鐸", "gender": "M"}, {"no": "6", "class": "5C", "id": "11", "name": "吳致謙", "gender": "M"}, {"no": "7", "class": "5D", "id": "21", "name": "麥文浩", "gender": "M"}], "S016A": [{"no": "1", "class": "6A", "id": "08", "name": "樊家熙", "gender": "M"}, {"no": "2", "class": "6B", "id": "10", "name": "劉靖晞", "gender": "F"}, {"no": "3", "class": "6B", "id": "11", "name": "梁宇熙", "gender": "M"}, {"no": "4", "class": "6B", "id": "12", "name": "李凱童", "gender": "F"}, {"no": "5", "class": "6C", "id": "05", "name": "馮垚鈃", "gender": "F"}, {"no": "6", "class": "6C", "id": "10", "name": "賴曉瑜", "gender": "F"}, {"no": "7", "class": "6C", "id": "20", "name": "吴彥霖", "gender": "F"}, {"no": "8", "class": "6D", "id": "12", "name": "林梓琦", "gender": "F"}, {"no": "9", "class": "6D", "id": "13", "name": "劉擁霆", "gender": "M"}, {"no": "10", "class": "6D", "id": "16", "name": "吳泳翹", "gender": "F"}, {"no": "11", "class": "6D", "id": "21", "name": "魏梓軒", "gender": "M"}], "S016B": [{"no": "1", "class": "6B", "id": "01", "name": "陳凱平", "gender": "M"}, {"no": "2", "class": "6B", "id": "08", "name": "黃政瑋", "gender": "M"}, {"no": "3", "class": "6B", "id": "19", "name": "黃芯瑜", "gender": "F"}, {"no": "4", "class": "6C", "id": "09", "name": "龔沛豪", "gender": "M"}, {"no": "5", "class": "6C", "id": "13", "name": "李景賀", "gender": "M"}, {"no": "6", "class": "6D", "id": "01", "name": "陳皓軒", "gender": "M"}, {"no": "7", "class": "6D", "id": "11", "name": "林梓謙", "gender": "M"}, {"no": "8", "class": "6D", "id": "15", "name": "廖思蓓", "gender": "F"}, {"no": "9", "class": "6D", "id": "19", "name": "倪昕怡", "gender": "F"}, {"no": "10", "class": "6D", "id": "20", "name": "孫芊愛", "gender": "F"}, {"no": "11", "class": "6D", "id": "22", "name": "黃文瑋", "gender": "M"}], "G856": []}};
+var dayMap = { mon:'星期一', tue:'星期二', wed:'星期三', thu:'星期四', fri:'星期五', sat:'星期六' };
 
-    const W = 640, H = 480;
-    const cx = W / 2, cy = H / 2 + 10;
-    const sunR = 100;
-    const moonR = 96;
+function switchDayTab(el, day) {
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  renderDay(day);
+}
 
-    let t = 1.0;
-    let playing = true;
-    let speed = 1;
-    let dragging = false;
+function typeClass(type) {
+  if (type.indexOf('\u968a') >= 0 || type.indexOf('\u6821\u968a') >= 0) return 'type-team';
+  if (type.indexOf('\u8208\u8da3') >= 0) return 'type-interest';
+  if (type.indexOf('\u652f\u63f4') >= 0) return 'type-support';
+  if (type.indexOf('\u8a17\u7ba1') >= 0) return 'type-care';
+  return 'type-other';
+}
 
-    function circleIntersectionArea(d, r1, r2) {
-        if (d >= r1 + r2) return 0;
-        if (d <= Math.abs(r1 - r2)) {
-            const small = Math.min(r1, r2);
-            return Math.PI * small * small;
-        }
-        const p1 = Math.acos((d*d + r1*r1 - r2*r2) / (2*d*r1));
-        const p2 = Math.acos((d*d + r2*r2 - r1*r1) / (2*d*r2));
-        const part1 = r1*r1 * p1;
-        const part2 = r2*r2 * p2;
-        const part3 = 0.5 * Math.sqrt(
-            (-d+r1+r2) * (d+r1-r2) * (d-r1+r2) * (d+r1+r2)
-        );
-        return part1 + part2 - part3;
+function renderDay(day) {
+  var dayName = dayMap[day];
+  var groups = EMBEDDED_DATA.groups.filter(function(g) { return g.day.indexOf(dayName) >= 0; });
+  var html = '';
+  if (groups.length === 0) {
+    html = '<p style="color:var(--muted);padding:40px;text-align:center;">\u6b64\u65e5\u7121\u6d3b\u52d5\u5b89\u6392</p>';
+  } else {
+    html = '<p style="color:var(--muted);margin-bottom:16px;">\u5171 ' + groups.length + ' \u500b\u6d3b\u52d5\u5c0f\u7d44</p>';
+    for (var i = 0; i < groups.length; i++) {
+      var g = groups[i];
+      var tc = typeClass(g.type);
+      var cc = g.student_count > 0 ? 'count-has' : 'count-zero';
+      var studentTable = '';
+      if (EMBEDDED_DATA.all_students && EMBEDDED_DATA.all_students[g.id]) {
+        studentTable = renderStudentTable(EMBEDDED_DATA.all_students[g.id]);
+      } else if (g.student_count > 0) {
+        studentTable = '<div class="note">\ud83d\udcdd \u5b78\u751f\u540d\u55ae\u5171 ' + g.student_count + ' \u4eba \u2014 \u8a73\u7d30\u540d\u55ae\u8acb\u767b\u5165\u7cfb\u7d71\u67e5\u770b</div>';
+      } else {
+        studentTable = '<div class="note">\u26a0\ufe0f \u6b64\u5c0f\u7d44\u5c1a\u672a\u52a0\u5165\u5b78\u751f</div>';
+      }
+      var dateParts = g.dates ? g.dates.split(/[,\uff0c\u3001\s]+/).filter(function(x){return x.length>0}) : [];
+      var dateCount = dateParts.length;
+      html += '<div class="activity-card">' +
+        '<div class="activity-header"><div>' +
+        '<span class="activity-id">' + g.id + '</span> ' +
+        '<span class="activity-type ' + tc + '">' + g.type + '</span>' +
+        '<div class="activity-title" style="margin-top:6px;">' + g.name + '</div>' +
+        '</div><span class="student-count ' + cc + '">' + g.student_count + ' \u4eba</span></div>' +
+        '<div class="info-grid">' +
+        '<div class="info-item"><div class="info-label">\ud83d\udcc5 \u4e0a\u8ab2\u65e5</div><div class="info-value">' + g.day + '</div></div>' +
+        '<div class="info-item"><div class="info-label">\u23f0 \u6642\u9593</div><div class="info-value">' + g.time + '</div></div>' +
+        '<div class="info-item"><div class="info-label">\ud83d\udccd \u5730\u9ede</div><div class="info-value">' + g.venue + '</div></div>' +
+        '<div class="info-item"><div class="info-label">\ud83d\udc64 \u8ca0\u8cac\u8001\u5e2b</div><div class="info-value">' + g.teacher + '</div></div>' +
+        '</div>' +
+        '<div class="dates-box"><div class="dates-label">\ud83d\udcc5 \u6d3b\u52d5\u65e5\u671f\uff08\u5171 ' + dateCount + ' \u5802\uff09</div>' + (g.dates || '\u672a\u8a2d\u5b9a') + '</div>' +
+        studentTable +
+        '</div>';
     }
+  }
+  document.getElementById('content').innerHTML = html;
+}
 
-    function getMoonX(t) {
-        const startX = W + 60;
-        const endX = -60;
-        return startX + (endX - startX) * t;
-    }
+function renderStudentTable(students) {
+  if (!students || students.length === 0) return '<div class="note">\u7121\u5b78\u751f\u540d\u55ae</div>';
+  var rows = '';
+  for (var i = 0; i < students.length; i++) {
+    var s = students[i];
+    rows += '<tr><td>' + s.no + '</td><td>' + s.class + '</td><td>' + s.id + '</td><td style="font-weight:600">' + s.name + '</td><td>' + (s.gender === 'M' ? '\u7537' : '\u5973') + '</td></tr>';
+  }
+  return '<div style="margin-top:12px;"><table class="student-table"><thead><tr><th>#</th><th>\u73ed\u5225</th><th>\u5b78\u865f</th><th>\u5b78\u751f\u59d3\u540d</th><th>\u6027\u5225</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
 
-    function drawScene() {
-        const mx = getMoonX(t);
-        const my = cy + 6;
-        const d = Math.hypot(mx - cx, my - cy);
-        const overlap = circleIntersectionArea(d, sunR, moonR);
-        const coverage = Math.min(overlap / (Math.PI * sunR * sunR), 1);
-        const brightness = 1 - coverage * 0.92;
-        const magnitude = (d < sunR + moonR) ? (sunR + moonR - d) / (2 * sunR) : 0;
-
-        // Sky darkening
-        const skyBase = [25, 60, 130];
-        const skyDark = [5, 8, 20];
-        const skyCorona = [10, 5, 30];
-        let skyR, skyG, skyB;
-        if (coverage > 0.95) {
-            const p = (coverage - 0.95) / 0.05;
-            skyR = skyDark[0] + (skyCorona[0] - skyDark[0]) * p;
-            skyG = skyDark[1] + (skyCorona[1] - skyDark[1]) * p;
-            skyB = skyDark[2] + (skyCorona[2] - skyDark[2]) * p;
-        } else {
-            const p = coverage / 0.95;
-            skyR = skyBase[0] + (skyDark[0] - skyBase[0]) * p;
-            skyG = skyBase[1] + (skyDark[1] - skyBase[1]) * p;
-            skyB = skyBase[2] + (skyDark[2] - skyBase[2]) * p;
-        }
-
-        ctx.fillStyle = `rgb(${skyR|0},${skyG|0},${skyB|0})`;
-        ctx.fillRect(0, 0, W, H);
-
-        // Stars
-        const starAlpha = Math.min(Math.max((1 - brightness - 0.3) * 3, 0), 1);
-        if (starAlpha > 0.02) {
-            if (!drawScene._stars) {
-                drawScene._stars = [];
-                for (let i = 0; i < 300; i++) {
-                    drawScene._stars.push({
-                        x: Math.random() * W,
-                        y: Math.random() * H * 0.6 + 10,
-                        r: Math.random() * 1.8 + 0.3,
-                        a: Math.random() * 0.7 + 0.3
-                    });
-                }
-            }
-            drawScene._stars.forEach(s => {
-                const flicker = 0.7 + 0.3 * Math.sin(Date.now() * 0.001 + s.x);
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255,255,255,${s.a * starAlpha * flicker})`;
-                ctx.fill();
-            });
-        }
-
-        // Sun glow
-        const glowR = sunR * (1 + 0.3 * (1 - coverage));
-        const grad = ctx.createRadialGradient(cx, cy, sunR * 0.1, cx, cy, glowR);
-        if (coverage > 0.85) {
-            const corona = (coverage - 0.85) / 0.15;
-            grad.addColorStop(0, `rgba(255,220,150,${0.3 * (1-corona)})`);
-            grad.addColorStop(0.4, `rgba(255,200,100,${0.15 * (1-corona)})`);
-            grad.addColorStop(1, `rgba(255,180,80,0)`);
-        } else {
-            grad.addColorStop(0, 'rgba(255,220,150,0.3)');
-            grad.addColorStop(0.4, 'rgba(255,200,100,0.15)');
-            grad.addColorStop(1, 'rgba(255,180,80,0)');
-        }
-        ctx.fillStyle = grad;
-        ctx.fillRect(cx - glowR, cy - glowR, glowR * 2, glowR * 2);
-
-        // Sun
-        const sg = ctx.createRadialGradient(cx - 15, cy - 15, 5, cx, cy, sunR);
-        sg.addColorStop(0, '#fff8e8');
-        sg.addColorStop(0.15, '#ffee88');
-        sg.addColorStop(0.5, '#ffcc33');
-        sg.addColorStop(0.85, '#ee9900');
-        sg.addColorStop(1, '#cc7700');
-        ctx.beginPath();
-        ctx.arc(cx, cy, sunR, 0, Math.PI * 2);
-        ctx.fillStyle = sg;
-        ctx.fill();
-
-        // Moon
-        const mg = ctx.createRadialGradient(mx - 12, my - 12, 8, mx, my, moonR);
-        mg.addColorStop(0, '#888899');
-        mg.addColorStop(0.3, '#555566');
-        mg.addColorStop(0.7, '#333344');
-        mg.addColorStop(1, '#1a1a22');
-        ctx.beginPath();
-        ctx.arc(mx, my, moonR, 0, Math.PI * 2);
-        ctx.fillStyle = mg;
-        ctx.fill();
-
-        // Moon shadow/terminator effect - subtle inner shadow
-        const termGrad = ctx.createRadialGradient(
-            mx + 20, my - 15, moonR * 0.1,
-            mx, my, moonR
-        );
-        termGrad.addColorStop(0, 'rgba(0,0,0,0)');
-        termGrad.addColorStop(0.5, 'rgba(0,0,0,0)');
-        termGrad.addColorStop(0.85, 'rgba(0,0,0,0.15)');
-        termGrad.addColorStop(1, 'rgba(0,0,0,0.4)');
-        ctx.beginPath();
-        ctx.arc(mx, my, moonR, 0, Math.PI * 2);
-        ctx.fillStyle = termGrad;
-        ctx.fill();
-
-        // Corona during totality
-        if (coverage > 0.92) {
-            const coronaIntensity = (coverage - 0.92) / 0.08;
-            for (let ring = 0; ring < 5; ring++) {
-                const r = sunR * (1.05 + ring * 0.15);
-                const alpha = coronaIntensity * (0.08 - ring * 0.012);
-                ctx.beginPath();
-                ctx.arc(cx, cy, r, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(255,220,180,${Math.max(alpha,0)})`;
-                ctx.lineWidth = 2 + ring * 1.5;
-                ctx.stroke();
-            }
-
-            // Corona rays
-            const rays = 16;
-            for (let i = 0; i < rays; i++) {
-                const angle = (i / rays) * Math.PI * 2 + Date.now() * 0.0003;
-                const len = sunR * (1.2 + 0.6 * Math.sin(i * 2.7));
-                ctx.beginPath();
-                ctx.moveTo(cx + Math.cos(angle) * sunR * 0.98, cy + Math.sin(angle) * sunR * 0.98);
-                ctx.lineTo(cx + Math.cos(angle) * len, cy + Math.sin(angle) * len);
-                ctx.strokeStyle = `rgba(255,220,190,${coronaIntensity * 0.1})`;
-                ctx.lineWidth = 1.5 + Math.sin(i * 3.1) * 0.8;
-                ctx.stroke();
-            }
-
-            // Diamond ring effect near edges of totality
-            if (coverage > 0.92 && coverage < 0.99) {
-                const diamondAlpha = Math.sin((coverage - 0.92) / 0.07 * Math.PI) * 0.8;
-                const angle = Math.atan2(my - cy, mx - cx);
-                const dx = Math.cos(angle + Math.PI) * sunR * 0.92;
-                const dy = Math.sin(angle + Math.PI) * sunR * 0.92;
-                const dg = ctx.createRadialGradient(
-                    cx + dx, cy + dy, 2,
-                    cx + dx, cy + dy, 30
-                );
-                dg.addColorStop(0, `rgba(255,255,255,${diamondAlpha})`);
-                dg.addColorStop(0.3, `rgba(255,240,200,${diamondAlpha * 0.5})`);
-                dg.addColorStop(1, 'rgba(255,220,150,0)');
-                ctx.fillStyle = dg;
-                ctx.fillRect(cx + dx - 30, cy + dy - 30, 60, 60);
-            }
-        }
-
-        // Horizon glow
-        const hg = ctx.createLinearGradient(0, H - 60, 0, H);
-        hg.addColorStop(0, 'rgba(255,200,100,0)');
-        hg.addColorStop(0.5, `rgba(255,180,80,${0.08 * (1 - coverage)})`);
-        hg.addColorStop(1, `rgba(255,160,60,${0.15 * (1 - coverage)})`);
-        ctx.fillStyle = hg;
-        ctx.fillRect(0, H - 60, W, 60);
-
-        // Update UI
-        coverageVal.textContent = (coverage * 100).toFixed(1) + '%';
-        brightnessVal.textContent = (brightness * 100).toFixed(0) + '%';
-        magnitudeVal.textContent = Math.max(0, magnitude).toFixed(2);
-
-        if (coverage > 0.99) {
-            phaseLabel.textContent = '🌑 食甚 · 日全蝕';
-            phaseLabel.style.color = '#ff8844';
-        } else if (coverage > 0.92) {
-            phaseLabel.textContent = '🌘 接近食甚 · 貝利珠出現';
-            phaseLabel.style.color = '#ffaa55';
-        } else if (coverage > 0.3) {
-            phaseLabel.textContent = '🌗 食甚 · 偏蝕階段';
-            phaseLabel.style.color = '#ffcc66';
-        } else if (coverage > 0.02) {
-            phaseLabel.textContent = '🌖 初虧 · 月球開始遮擋';
-            phaseLabel.style.color = '#ddcc88';
-        } else {
-            phaseLabel.textContent = '☀️ 正常日照';
-            phaseLabel.style.color = '#ffcc66';
-        }
-
-        posSlider.value = t * 100;
-    }
-
-    function animate() {
-        if (playing) {
-            t += 0.003 * speed;
-            if (t > 1.1) {
-                t = -0.1;
-            }
-        }
-        drawScene();
-        requestAnimationFrame(animate);
-    }
-
-    // Slider
-    posSlider.addEventListener('input', () => {
-        t = parseFloat(posSlider.value) / 100;
-        playing = false;
-        playBtn.textContent = '▶ 播放';
-        playBtn.classList.remove('active');
-    });
-
-    // Play/Pause
-    playBtn.addEventListener('click', () => {
-        playing = !playing;
-        playBtn.textContent = playing ? '▶ 播放' : '⏸ 暫停';
-        playBtn.classList.toggle('active');
-    });
-
-    // Reset
-    resetBtn.addEventListener('click', () => {
-        t = 1.0;
-        playing = true;
-        playBtn.textContent = '▶ 播放';
-        playBtn.classList.add('active');
-        posSlider.value = t * 100;
-    });
-
-    // Speed
-    speedSpans.forEach(s => {
-        s.addEventListener('click', () => {
-            speedSpans.forEach(x => x.classList.remove('active'));
-            s.classList.add('active');
-            speed = parseFloat(s.dataset.speed);
-        });
-    });
-
-    // Drag on canvas
-    function handleDrag(e) {
-        e.preventDefault();
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const canvasX = (clientX - rect.left) * scaleX;
-        t = Math.max(0, Math.min(1, (W + 60 - canvasX) / (W + 120)));
-        playing = false;
-        playBtn.textContent = '▶ 播放';
-        playBtn.classList.remove('active');
-        posSlider.value = t * 100;
-    }
-
-    canvas.addEventListener('mousedown', (e) => {
-        dragging = true;
-        handleDrag(e);
-    });
-    canvas.addEventListener('mousemove', (e) => {
-        if (dragging) handleDrag(e);
-    });
-    document.addEventListener('mouseup', () => { dragging = false; });
-
-    canvas.addEventListener('touchstart', (e) => {
-        dragging = true;
-        handleDrag(e);
-    }, { passive: false });
-    canvas.addEventListener('touchmove', (e) => {
-        if (dragging) handleDrag(e);
-    }, { passive: false });
-    canvas.addEventListener('touchend', () => { dragging = false; });
-
-    // Start
-    animate();
+renderDay('mon');
 </script>
 </body>
 </html>
